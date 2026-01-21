@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>World Of Code</title>
+
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'shop/style.css' %}">
+
+    <style>
+        /* ===== GLOBAL ===== */
+        body {
+            margin: 0;
+            background: #f5f9ff;
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+
+        /* ===== LEFT SIDEBAR ===== */
+        .side-header {
+            position: fixed;
+            top: 0;
+            left: -230px;
+            width: 230px;
+            height: 100vh;
+            background: linear-gradient(180deg, #0d6efd, #084298);
+            color: white;
+            padding: 30px 20px;
+            transition: left 0.35s ease;
+            z-index: 1000;
+            box-shadow: 6px 0 25px rgba(0,0,0,0.15);
+        }
+
+        .side-header.active {
+            left: 0;
+        }
+
+        .side-header .avatar {
+            width: 70px;
+            height: 70px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 50%;
+            font-size: 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 40px;
+        }
+
+        .side-header a {
+            display: block;
+            color: white;
+            text-decoration: none;
+            padding: 10px 14px;
+            border-radius: 12px;
+            margin-bottom: 10px;
+            font-size: 1.05rem;
+            transition: background 0.25s ease;
+        }
+
+        .side-header a:hover {
+            background: rgba(255,255,255,0.15);
+        }
+
+        /* ===== TOP HEADER ===== */
+        .top-header {
+            position: fixed;
+            top: -75px;
+            left: 0;
+            width: 100%;
+            height: 75px;
+            background: white;
+            border-bottom: 1px solid #e3ebff;
+            display: flex;
+            align-items: center;
+            padding: 0 30px;
+            transition: top 0.35s ease;
+            z-index: 900;
+        }
+
+        .top-header.active {
+            top: 0;
+        }
+
+        .logo {
+            font-weight: 700;
+            font-size: 1.6rem;
+            color: #0d6efd;
+            text-decoration: none;
+        }
+
+        /* ===== HEADER ACTIONS ===== */
+        .top-actions {
+            margin-left: auto;
+            display: flex;
+            align-items: center;
+            gap: 18px;
+        }
+
+        /* ===== SEARCH ===== */
+        .search-container {
+            display: flex;
+            align-items: center;
+        }
+
+        .search-btn {
+            background: none;
+            border: none;
+            font-size: 1.3rem;
+            cursor: default; /* not clickable now */
+            color: #0d6efd;
+        }
+
+        .search-input {
+            width: 220px; /* always open */
+            opacity: 1;   /* visible */
+            margin-left: 8px;
+            padding: 7px 14px;
+            border: 1px solid #0d6efd;
+            border-radius: 20px;
+            outline: none;
+        }
+
+        /* ===== HEADER BUTTONS ===== */
+        .header-buttons {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .header-btn {
+            padding: 8px 18px;
+            border-radius: 20px;
+            font-weight: 500;
+            text-decoration: none;
+            color: #0d6efd;
+            transition: all 0.25s ease;
+        }
+
+        .header-btn:hover {
+            background: rgba(13,110,253,0.1);
+        }
+
+        .header-btn.primary {
+            background: #0d6efd;
+            color: white;
+        }
+
+        .header-btn.primary:hover {
+            background: #0b5ed7;
+        }
+
+        .header-avatar {
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            border: none;
+            background: #0d6efd;
+            color: white;
+            font-size: 1.3rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: box-shadow 0.25s ease, transform 0.2s ease;
+        }
+
+        .header-avatar:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 8px 20px rgba(13,110,253,0.35);
+        }
+
+        /* ===== MAIN ===== */
+        .main-content {
+            padding-top: 60px;
+            padding-bottom: 90px;
+        }
+
+        /* ===== FOOTER ===== */
+        footer {
+            height: 70px;
+            background: #0d6efd;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.95rem;
+        }
+
+        .logout-button{
+            position:absolute;
+            bottom: 10px;
+            left: 70px;
+            background: #D63215;
+        }
+    </style>
+</head>
+
+<body style="min-height:100vh; display:flex; flex-direction:column;">
+
+{% if user.is_authenticated %}
+<!-- ===== SIDEBAR ===== -->
+<div class="side-header" id="sideHeader">
+    <div class="avatar">👤</div>
+    <a>Profile</a>
+    <a>Projects</a>
+    <a>Settings</a>
+    <a class="logout-button">Log out</a>
+</div>
+{% endif %}
+
+<!-- ===== TOP HEADER ===== -->
+<div class="top-header" id="topHeader">
+    <a href="{% url 'home' %}" class="logo">World Of Code</a>
+
+    <div class="top-actions">
+        <!-- Search -->
+        <div class="search-container">
+            <button class="search-btn">🔍</button>
+            <input
+                type="text"
+                id="searchInput"
+                class="search-input"
+                placeholder="Search people..."
+            >
+        </div>
+
+        <!-- Buttons -->
+        <div class="header-buttons">
+            <a href="{% url 'about' %}" class="header-btn" style="margin-left:15px; margin-right:35px;">About Us</a>
+
+            {% if user.is_authenticated %}
+                <button class="header-avatar">👤</button>
+            {% else %}
+                <a class="header-btn primary">Sign in</a>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<!-- ===== MAIN ===== -->
+<main class="main-content container flex-grow-1">
+    {% block content %}{% endblock %}
+</main>
+
+<!-- ===== FOOTER ===== -->
+<footer>
+    <p>Barcelona, Spain — 2026</p>
+</footer>
+
+<!-- ===== JAVASCRIPT ===== -->
+<script>
+    const sideHeader = document.getElementById("sideHeader");
+    const topHeader = document.getElementById("topHeader");
+
+    document.addEventListener("mousemove", (e) => {
+        if (sideHeader) {
+            if (e.clientX < 15) {
+                sideHeader.classList.add("active");
+            } else if (e.clientX > 260) {
+                sideHeader.classList.remove("active");
+            }
+        }
+
+        if (e.clientY < 50) {
+            topHeader.classList.add("active");
+        } else if (e.clientY > 120) {
+            topHeader.classList.remove("active");
+        }
+    });
+
+    // Removed search click functionality since input is always visible
+</script>
+
+</body>
+</html>

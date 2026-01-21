@@ -5,13 +5,7 @@ from pathlib import Path
 # BASE
 # =========================
 
-BASE_DIR = Path(__file__).resolve().parent.parent
-
-SECRET_KEY = os.environ.get("SECRET_KEY", "unsafe-dev-secret-key")
-
-DEBUG = False
-
-ALLOWED_HOSTS = ["*"]
+BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
 # =========================
 # APPLICATIONS
@@ -30,7 +24,7 @@ INSTALLED_APPS = [
     "rest_framework_simplejwt",
 
     # Local
-    "main"
+    "main",
 ]
 
 # =========================
@@ -52,9 +46,9 @@ MIDDLEWARE = [
 # URLS / WSGI
 # =========================
 
-ROOT_URLCONF = "myproject.urls"
+ROOT_URLCONF = "config.urls"
 
-WSGI_APPLICATION = "myproject.wsgi.application"
+WSGI_APPLICATION = "config.wsgi.application"
 
 # =========================
 # TEMPLATES
@@ -92,24 +86,6 @@ LOGOUT_REDIRECT_URL = "/login/"
 # DATABASE
 # =========================
 
-DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.postgresql",
-        "NAME": os.environ.get("DB_NAME", ""),
-        "USER": os.environ.get("DB_USER", ""),
-        "PASSWORD": os.environ.get("DB_PASSWORD", ""),
-        "HOST": os.environ.get("DB_HOST", ""),
-        "PORT": os.environ.get("DB_PORT", ""),
-    }
-}
-
-if os.getenv("DATABASE_URL"):
-    import dj_database_url
-    DATABASES["default"] = dj_database_url.parse(
-        os.getenv("DATABASE_URL"),
-        conn_max_age=600,
-        ssl_require=True,
-    )
 
 # =========================
 # PASSWORD VALIDATION
@@ -151,7 +127,7 @@ MEDIA_ROOT = BASE_DIR / "media"
 
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": [
-        "shop.authentication.CookieJWTAuthentication",
+        "main.authentication.CookieJWTAuthentication",
     ],
     "DEFAULT_PERMISSION_CLASSES": [
         "rest_framework.permissions.IsAuthenticatedOrReadOnly",
@@ -168,17 +144,27 @@ REST_FRAMEWORK = {
 # EMAIL
 # =========================
 
-EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
-EMAIL_HOST = "smtp.gmail.com"
-EMAIL_PORT = int(os.environ.get("EMAIL_PORT", 587))
-EMAIL_USE_TLS = True
-EMAIL_HOST_USER = os.environ.get("EMAIL_HOST_USER")
-EMAIL_HOST_PASSWORD = os.environ.get("EMAIL_HOST_PASSWORD")
-DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+# EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+# EMAIL_HOST = "smtp.gmail.com"
+# EMAIL_PORT = int(os.environ.get("EMAIL_PORT", 587))
+# EMAIL_USE_TLS = True
+# EMAIL_HOST_USER = os.environ.get("EMAIL_HOST_USER")
+# EMAIL_HOST_PASSWORD = os.environ.get("EMAIL_HOST_PASSWORD")
+# DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 
 # =========================
 # CELERY
 # =========================
+
+# CELERY_BROKER_URL = os.getenv("REDIS_URL")
+# CELERY_RESULT_BACKEND = os.getenv("REDIS_URL")
+#
+# CELERY_ACCEPT_CONTENT = ["json"]
+# CELERY_TASK_SERIALIZER = "json"
+# CELERY_RESULT_SERIALIZER = "json"
+#
+# CELERY_TIMEZONE = "Europe/Madrid"
+# CELERY_ENABLE_UTC = False
 
 # =========================
 # STRIPE

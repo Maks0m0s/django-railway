@@ -1,0 +1,82 @@
+{% extends 'main/base.html' %}
+
+{% block content %}
+
+<!-- ===== HERO SECTION ===== -->
+<section class="text-center py-5">
+    <h1 class="fw-bold mb-3" style="font-size: 3rem; color:#0d6efd;">
+        Welcome to <span style="color:#084298;">World of Code</span>
+    </h1>
+    <p class="lead text-muted mb-4">
+        A professional portfolio platform where developers, creators, and engineers
+        showcase their work, connect with others, and grow their careers.
+    </p>
+
+    {% if not user.is_authenticated %}
+        <div class="d-flex justify-content-center gap-3">
+            <a class="btn btn-primary btn-lg px-4">
+                Get Started
+            </a>
+            <a href="{% url 'about' %}" class="btn btn-outline-primary btn-lg px-4">
+                Learn More
+            </a>
+        </div>
+    {% endif %}
+</section>
+
+<!-- ===== FEATURES ===== -->
+<section class="row text-center mt-5">
+    <div class="col-md-4 mb-4">
+        <div class="p-4 bg-white rounded-4 shadow-sm h-100">
+            <div class="fs-1 mb-3">💼</div>
+            <h4 class="fw-semibold">Professional Portfolios</h4>
+            <p class="text-muted">
+                Build a clean, modern portfolio to showcase your projects, skills,
+                and experience.
+            </p>
+        </div>
+    </div>
+
+    <div class="col-md-4 mb-4">
+        <div class="p-4 bg-white rounded-4 shadow-sm h-100">
+            <div class="fs-1 mb-3">🌐</div>
+            <h4 class="fw-semibold">Connect & Network</h4>
+            <p class="text-muted">
+                Discover other developers, explore their work, and build meaningful
+                professional connections.
+            </p>
+        </div>
+    </div>
+
+    <div class="col-md-4 mb-4">
+        <div class="p-4 bg-white rounded-4 shadow-sm h-100">
+            <div class="fs-1 mb-3">🚀</div>
+            <h4 class="fw-semibold">Grow Your Career</h4>
+            <p class="text-muted">
+                Present your skills in one place and open doors to new opportunities.
+            </p>
+        </div>
+    </div>
+</section>
+
+<!-- ===== CTA SECTION ===== -->
+<section class="mt-5 p-5 text-center rounded-4" style="background:#e9f1ff;">
+    <h2 class="fw-bold mb-3">
+        Turn your code into a professional identity
+    </h2>
+    <p class="text-muted mb-4">
+        World of Code helps you stand out with a modern, developer-focused profile.
+    </p>
+
+    {% if user.is_authenticated %}
+        <a class="btn btn-primary btn-lg px-5">
+            Go to your dashboard
+        </a>
+    {% else %}
+        <a class="btn btn-primary btn-lg px-5">
+            Join World of Code
+        </a>
+    {% endif %}
+</section>
+
+{% endblock %}
