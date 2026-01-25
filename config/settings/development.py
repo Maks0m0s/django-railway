@@ -2,7 +2,7 @@ from .base import *
 
 SECRET_KEY = "unsafe-dev-secret-key"
 DEBUG = True
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 DATABASES = {
     "default": {

@@ -1,0 +1,192 @@
+{% extends "main/base.html" %}
+{% block content %}
+
+<div class="container py-5" style="max-width: 900px;">
+    <div class="card shadow-lg rounded-4 p-4 border-0">
+
+        <!-- HEADER -->
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h2 class="fw-bold text-primary mb-0">{{ project.name }}</h2>
+            <a href="{% url 'user-dashboard' profile_user.id %}"
+               class="btn btn-outline-secondary btn-sm shadow-sm">
+                ← Dashboard
+            </a>
+        </div>
+
+        <p class="text-muted mb-4">
+            {{ project.description|default:"No description provided." }}
+        </p>
+
+        <!-- LIKE SECTION -->
+        <div class="d-flex align-items-center gap-3 mb-4">
+            <button
+                id="likeBtn"
+                class="btn btn-outline-danger rounded-pill px-4"
+                data-project-id="{{ project.id }}"
+            >
+                ❤️ Like
+            </button>
+
+            <span class="text-muted">
+                <strong id="likesCount">{{ project.likes.count }}</strong> likes
+            </span>
+        </div>
+
+        <hr>
+
+        <!-- LINKS -->
+        <div class="mb-4">
+            <h5 class="fw-semibold">Links</h5>
+            {% if project.links.exists %}
+                <ul class="list-group list-group-flush rounded-3 shadow-sm">
+                    {% for link in project.links.all %}
+                        <li class="list-group-item border-0">
+                            <a href="{{ link.url }}" target="_blank"
+                               class="fw-medium text-decoration-none">
+                                {{ link.name }}
+                            </a>
+                            <br>
+                            <small class="text-muted">{{ link.url }}</small>
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p class="text-muted">No links added yet.</p>
+            {% endif %}
+        </div>
+
+        <!-- PHOTOS -->
+        <div class="mb-4">
+            <h5 class="fw-semibold">Photos</h5>
+            {% if project.photos.exists %}
+                <div class="d-flex flex-wrap gap-3">
+                    {% for photo in project.photos.all %}
+                        <a href="{% url 'photo-detail' photo.id %}">
+                            <img src="{{ photo.photo.url }}"
+                                 class="img-fluid rounded shadow-sm project-photo"
+                                 style="width:150px; height:150px; object-fit:cover; cursor:pointer;"
+                                 data-bs-toggle="modal"
+                                 data-bs-target="#photoModal"
+                                 data-photo-url="{{ photo.photo.url }}">
+                        </a>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <p class="text-muted">No photos added yet.</p>
+            {% endif %}
+        </div>
+
+        <hr>
+
+        <!-- COMMENTS -->
+            <div class="mt-5">
+                <h5 class="fw-semibold mb-3">Comments</h5>
+
+                {% if project.comments.exists %}
+                    <div class="list-group shadow-sm rounded-4">
+                        {% for comment in project.comments.all %}
+                            <div class="list-group-item border-0 py-3">
+                                <div class="d-flex justify-content-between align-items-start">
+                                    <div>
+                                        <strong>{{ comment.user.username }}</strong>
+                                        <p class="mb-1 mt-1">{{ comment.text }}</p>
+                                        <small class="text-muted">
+                                            {{ comment.created_at|date:"M d, Y H:i" }}
+                                        </small>
+                                    </div>
+
+                                    {% if user.is_authenticated and comment.user == user %}
+                                        <form method="post"
+                                              action="{% url 'delete-comment' profile_user.id project.id comment.id %}"
+                                              onsubmit="return confirm('Delete this comment?');">
+                                            {% csrf_token %}
+                                            <button class="btn btn-sm btn-outline-danger">
+                                                🗑
+                                            </button>
+                                        </form>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <p class="text-muted">No comments yet. Be the first!</p>
+                {% endif %}
+            </div>
+
+            <!-- ADD COMMENT -->
+            {% if user.is_authenticated %}
+                <form method="post" action="{% url 'add-comment' profile_user.id project.id %}">
+                    {% csrf_token %}
+                    <textarea
+                        name="text"
+                        class="form-control rounded-4 mb-2"
+                        rows="3"
+                        placeholder="Write a comment..."
+                        required></textarea>
+
+                    <button class="btn btn-primary rounded-pill px-4">
+                        Post comment
+                    </button>
+                </form>
+            {% else %}
+                <p class="text-muted">
+                    <a href="{% url 'auth-login' %}">Sign in</a> to like or comment.
+                </p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<!-- PHOTO MODAL -->
+<div class="modal fade" id="photoModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content bg-transparent border-0">
+            <div class="modal-body p-0">
+                <img id="modalPhoto" class="w-100 rounded shadow-lg">
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Photo modal
+    document.querySelectorAll('.project-photo').forEach(photo => {
+        photo.addEventListener('click', function () {
+            document.getElementById('modalPhoto').src = this.dataset.photoUrl;
+        });
+    });
+
+    // Like button (AJAX-ready)
+    const likeBtn = document.getElementById('likeBtn');
+    if (likeBtn) {
+        likeBtn.addEventListener('click', () => {
+            fetch(`/projects/{{ project.id }}/like/`, {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': '{{ csrf_token }}',
+                }
+            })
+            .then(res => res.json())
+            .then(data => {
+                document.getElementById('likesCount').innerText = data.likes;
+            });
+        });
+    }
+</script>
+
+<style>
+.card {
+    transition: transform 0.25s ease;
+}
+.card:hover {
+    transform: translateY(-4px);
+}
+
+.project-photo:hover {
+    transform: scale(1.05);
+    transition: transform 0.2s ease-in-out;
+}
+</style>
+
+{% endblock %}

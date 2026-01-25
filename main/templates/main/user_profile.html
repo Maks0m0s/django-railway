@@ -1,0 +1,115 @@
+{% extends "main/base.html" %}
+
+{% block content %}
+<div class="container py-5" style="max-width:1000px;">
+
+    <!-- ================= PROFILE CARD ================= -->
+    <div class="card shadow-sm border-0 rounded-4 p-5 mb-5">
+
+        <!-- Header -->
+        <div class="d-flex align-items-center gap-4 mb-4">
+            {% if profile_user.is_staff %}
+                <div
+                    class="d-flex align-items-center justify-content-center"
+                    style="
+                        width:80px;
+                        height:80px;
+                        border-radius:50%;
+                        background:linear-gradient(135deg,#0d6efd,#084298);
+                        color:white;
+                        font-size:2.5rem;
+                    ">
+                    👑
+                </div>
+            {% else %}
+                <div
+                    class="d-flex align-items-center justify-content-center"
+                    style="
+                        width:90px;
+                        height:90px;
+                        border-radius:50%;
+                        background:linear-gradient(135deg,#0d6efd,#084298);
+                        color:white;
+                        font-size:2.5rem;
+                    ">
+                    👤
+                </div>
+            {% endif %}
+
+
+            <div>
+                <h2 class="fw-bold mb-1">{{ profile_user.username }}</h2>
+                <p class="text-muted mb-0">{{ profile_user.email }}</p>
+            </div>
+        </div>
+
+        <hr class="my-4">
+
+        <!-- User details -->
+        <div class="row gy-4">
+            <div class="col-md-6">
+                <h6 class="text-muted mb-1">First name</h6>
+                <p class="fw-semibold mb-0">
+                    {{ profile_user.first_name|default:"—" }}
+                </p>
+            </div>
+
+            <div class="col-md-6">
+                <h6 class="text-muted mb-1">Last name</h6>
+                <p class="fw-semibold mb-0">
+                    {{ profile_user.last_name|default:"—" }}
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- ================= PROJECTS PREVIEW ================= -->
+    <div class="card shadow-sm border-0 rounded-4 p-4">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h4 class="fw-bold mb-0">Projects</h4>
+                <a href="{% url 'user-dashboard' profile_user.id %}"
+                   class="fw-semibold text-decoration-none text-primary">
+                    View all →
+                </a>
+        </div>
+
+        {% if projects %}
+            <div class="row g-3">
+                {% for project in projects %}
+                    <div class="col-md-4">
+                        <a href="{% url 'user-project' profile_user.id project.id %}" class="text-decoration-none">
+                            <div class="card h-100 border-0 shadow-sm rounded-4 p-3 project-card">
+                                <h6 class="fw-semibold text-dark mb-1">
+                                    {{ project.name }}
+                                </h6>
+                                <p class="text-muted small mb-0">
+                                    {{ project.short_description|truncatechars:60 }}
+                                </p>
+                            </div>
+                        </a>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="text-center p-4 rounded-4"
+                 style="background:#f5f9ff; border:1px dashed #cfe2ff;">
+                <div style="font-size:2rem;">📂</div>
+                <p class="text-muted mb-0 mt-2">
+                    No projects yet.
+                </p>
+            </div>
+        {% endif %}
+    </div>
+</div>
+
+<style>
+.project-card {
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.project-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 10px 30px rgba(13,110,253,0.2);
+}
+</style>
+{% endblock %}

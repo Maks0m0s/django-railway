@@ -1,0 +1,118 @@
+{% extends "main/base.html" %}
+{% block content %}
+
+<div class="container py-5">
+    <div class="card shadow-lg rounded-4 p-5 mx-auto" style="max-width:700px;">
+        <h2 class="fw-bold text-center mb-4 text-primary">
+            {% if project %} Edit Project {% else %} Create Project {% endif %}
+        </h2>
+
+        {% if error %}
+            <div class="alert alert-danger shadow-sm">{{ error }}</div>
+        {% endif %}
+
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+
+            <!-- PROJECT NAME -->
+            <div class="mb-3">
+                <label class="fw-semibold">Project Name</label>
+                <input type="text" name="name" class="form-control shadow-sm"
+                       value="{{ project.name|default:'' }}" placeholder="Enter project name" required>
+            </div>
+
+            <!-- DESCRIPTION -->
+            <div class="mb-3">
+                <label class="fw-semibold">Description</label>
+                <textarea name="description" rows="4" class="form-control shadow-sm" placeholder="Enter project description">{{ project.description|default:'' }}</textarea>
+            </div>
+
+            <!-- LINKS -->
+            <div class="mb-3">
+                <label class="fw-semibold">Links</label>
+                <div id="links-container">
+                    {% if project and project.links.exists %}
+                        {% for link in project.links.all %}
+                            <div class="d-flex gap-2 mb-2 link-row">
+                                <input type="text" name="link_name[]" class="form-control shadow-sm" placeholder="Link Name" value="{{ link.name }}">
+                                <input type="text" name="link_url[]" class="form-control shadow-sm" placeholder="Link URL" value="{{ link.url }}">
+                                <button type="button" class="btn btn-danger btn-sm remove-link">X</button>
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+                </div>
+                <button type="button" id="add-link" class="btn btn-outline-primary btn-sm mt-2 shadow-sm">+ Add Link</button>
+            </div>
+
+            <!-- PHOTOS -->
+            <div class="mb-3">
+                <label class="fw-semibold">Photos</label>
+                <input type="file" name="photos[]" multiple class="form-control shadow-sm">
+                {% if project and project.photos.exists %}
+                    <div class="d-flex flex-wrap gap-3 mt-2">
+                        {% for photo in project.photos.all %}
+                            <div class="position-relative">
+                                <img src="{{ photo.photo.url }}" class="img-thumbnail shadow-sm" style="width:100px;height:100px;object-fit:cover;">
+                                <button type="button" class="btn btn-danger btn-sm position-absolute top-0 end-0 delete-photo" data-photo-id="{{ photo.id }}">X</button>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+
+            <button class="btn btn-success w-100 py-2 shadow-sm">
+                {% if project %} Save Changes {% else %} Create Project {% endif %}
+            </button>
+        </form>
+    </div>
+</div>
+
+<script>
+// ===== LINKS DYNAMIC ADD/REMOVE =====
+document.getElementById('add-link').addEventListener('click', function() {
+    const container = document.getElementById('links-container');
+    const div = document.createElement('div');
+    div.classList.add('d-flex','gap-2','mb-2','link-row');
+    div.innerHTML = `
+        <input type="text" name="link_name[]" class="form-control shadow-sm" placeholder="Link Name">
+        <input type="text" name="link_url[]" class="form-control shadow-sm" placeholder="Link URL">
+        <button type="button" class="btn btn-danger btn-sm remove-link">X</button>
+    `;
+    container.appendChild(div);
+
+    div.querySelector('.remove-link').addEventListener('click', function() {
+        div.remove();
+    });
+});
+
+// Remove existing link rows
+document.querySelectorAll('.remove-link').forEach(btn => {
+    btn.addEventListener('click', function() {
+        btn.parentElement.remove();
+    });
+});
+
+// ===== DELETE PHOTO =====
+document.querySelectorAll('.delete-photo').forEach(btn => {
+    btn.addEventListener('click', function() {
+        const photoId = btn.dataset.photoId;
+        const form = btn.closest('form');
+        const input = document.createElement('input');
+        input.type = 'hidden';
+        input.name = 'delete_photos[]';
+        input.value = photoId;
+        form.appendChild(input);
+        btn.parentElement.remove();
+    });
+});
+</script>
+
+<style>
+/* Hover and shadow effects for cards */
+.card:hover {
+    transform: translateY(-3px);
+    transition: all 0.2s ease-in-out;
+}
+</style>
+
+{% endblock %}

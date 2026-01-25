@@ -165,6 +165,8 @@
             justify-content: center;
             cursor: pointer;
             transition: box-shadow 0.25s ease, transform 0.2s ease;
+            text-decoration: none;
+
         }
 
         .header-avatar:hover {
@@ -203,11 +205,15 @@
 {% if user.is_authenticated %}
 <!-- ===== SIDEBAR ===== -->
 <div class="side-header" id="sideHeader">
-    <div class="avatar">👤</div>
-    <a>Profile</a>
-    <a>Projects</a>
+    {% if user.is_staff %}
+        <div class="avatar">👑</div>
+    {% else %}
+        <div class="avatar">👤</div>
+    {% endif %}
+    <a href="{% url 'profile' %}">Profile</a>
+    <a href="{% url 'dashboard' %}">Projects</a>
     <a>Settings</a>
-    <a class="logout-button">Log out</a>
+    <a href="{% url 'auth-logout' %}" class="logout-button">Log out</a>
 </div>
 {% endif %}
 
@@ -225,6 +231,10 @@
                 class="search-input"
                 placeholder="Search people..."
             >
+            <div id="searchResults"
+                class="position-absolute bg-white shadow rounded-3 mt-2"
+                 style="width:260px; display:none; z-index:1000; top: 40px;">
+            </div>
         </div>
 
         <!-- Buttons -->
@@ -232,9 +242,13 @@
             <a href="{% url 'about' %}" class="header-btn" style="margin-left:15px; margin-right:35px;">About Us</a>
 
             {% if user.is_authenticated %}
-                <button class="header-avatar">👤</button>
+                {% if user.is_staff %}
+                    <a href="{% url 'profile' %}" class="header-avatar">👑</a>
+                {% else %}
+                    <a href="{% url 'profile' %}" class="header-avatar">👤</a>
+                {% endif %}
             {% else %}
-                <a class="header-btn primary">Sign in</a>
+                <a href="{% url 'auth-login' %}" class="header-btn primary">Sign in</a>
             {% endif %}
         </div>
     </div>
@@ -252,6 +266,61 @@
 
 <!-- ===== JAVASCRIPT ===== -->
 <script>
+    document.addEventListener('DOMContentLoaded', () => {
+    const input = document.getElementById('searchInput');
+    const resultsBox = document.getElementById('searchResults');
+    let controller;
+
+    input.addEventListener('input', () => {  // 👈 use input event
+        const query = input.value.trim();
+
+        if (query.length < 2) {
+            resultsBox.style.display = 'none';
+            resultsBox.innerHTML = '';
+            return;
+        }
+
+        if (controller) controller.abort();
+        controller = new AbortController();
+
+        fetch(`/search/?q=${encodeURIComponent(query)}`, {  // 👈 fixed
+            signal: controller.signal
+        })
+        .then(res => res.json())
+        .then(data => {
+            resultsBox.innerHTML = '';
+
+            if (data.results.length === 0) {
+                resultsBox.innerHTML = `<div class="p-3 text-muted">No users found</div>`;
+            } else {
+                data.results.forEach(user => {
+                    resultsBox.innerHTML += `
+                        <a href="/users/${user.id}/"
+                           class="d-block px-3 py-2 text-decoration-none text-dark hover-bg">
+                            <strong>${user.username}</strong><br>
+                            <small class="text-muted">
+                                ${user.first_name} ${user.last_name}
+                            </small>
+                        </a>
+                    `;
+                });
+            }
+
+            resultsBox.style.display = 'block';
+        })
+        .catch(err => {
+            console.error('Search error:', err);
+            resultsBox.style.display = 'none';
+        });
+    });
+
+    document.addEventListener('click', (e) => {
+        if (!e.target.closest('.search-container')) {
+            resultsBox.style.display = 'none';
+        }
+    });
+    });
+
     const sideHeader = document.getElementById("sideHeader");
     const topHeader = document.getElementById("topHeader");
 

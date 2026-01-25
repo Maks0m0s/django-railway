@@ -9,5 +9,5 @@ whitenoise==6.11.0
 gunicorn==23.0.0
 packaging==25.0
 python-dotenv==1.2.1
-Pillow
+Pillow==25.3
 stripe>=8.0.0

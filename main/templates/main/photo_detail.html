@@ -1,0 +1,12 @@
+{% extends "main/base.html" %}
+{% block content %}
+
+<div class="container py-5">
+    <a href="javascript:history.back()" class="btn btn-outline-secondary mb-4">&larr; Back</a>
+
+    <div class="d-flex justify-content-center">
+        <img src="{{ photo.photo.url }}" class="img-fluid rounded shadow-lg" style="max-height:90vh; object-fit:contain;">
+    </div>
+</div>
+
+{% endblock %}

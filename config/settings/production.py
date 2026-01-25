@@ -1,7 +1,4 @@
 from .base import *
-from dotenv import load_dotenv
-
-load_dotenv()  # <-- load environment variables first
 
 SECRET_KEY = os.environ.get('SECRET_KEY')
 

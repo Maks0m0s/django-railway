@@ -1,0 +1,113 @@
+{% extends "main/base.html" %}
+
+{% block content %}
+<div class="container py-5" style="max-width:900px;">
+
+    <div class="card shadow-sm border-0 rounded-4 p-5">
+
+        <!-- Header -->
+        <div class="d-flex align-items-center justify-content-between mb-4">
+            <div>
+                <h2 class="fw-bold mb-1">Edit profile</h2>
+                <p class="text-muted mb-0">
+                    Update your personal information and secure your account
+                </p>
+            </div>
+
+            <a href="{% url 'profile' %}"
+               class="btn btn-outline-secondary rounded-pill px-4 shadow-sm">
+                ← Back
+            </a>
+        </div>
+
+        <hr class="my-4">
+
+        {% if error %}
+            <div class="alert alert-danger shadow-sm">
+                {{ error }}
+            </div>
+        {% endif %}
+
+        <form method="post">
+            {% csrf_token %}
+
+            <!-- ================= BASIC INFO ================= -->
+            <h5 class="fw-semibold mb-3">Basic information</h5>
+
+            <div class="row gy-3 mb-4">
+                <div class="col-md-6">
+                    <label class="form-label fw-semibold">Username</label>
+                    <input type="text"
+                           name="username"
+                           class="form-control shadow-sm"
+                           value="{{ user.username }}"
+                           required>
+                </div>
+
+                <div class="col-md-6">
+                    <label class="form-label fw-semibold">Email</label>
+                    <input type="email"
+                           name="email"
+                           class="form-control shadow-sm"
+                           value="{{ user.email }}"
+                           required>
+                </div>
+
+                <div class="col-md-6">
+                    <label class="form-label fw-semibold">First name</label>
+                    <input type="text"
+                           name="first_name"
+                           class="form-control shadow-sm"
+                           value="{{ user.first_name }}">
+                </div>
+
+                <div class="col-md-6">
+                    <label class="form-label fw-semibold">Last name</label>
+                    <input type="text"
+                           name="last_name"
+                           class="form-control shadow-sm"
+                           value="{{ user.last_name }}">
+                </div>
+            </div>
+
+            <!-- ================= PASSWORD CONFIRM ================= -->
+            <h5 class="fw-semibold mb-3 text-danger">
+                Security confirmation
+            </h5>
+
+            <div class="row gy-3 mb-4">
+                <div class="col-md-6">
+                    <label class="form-label fw-semibold">
+                        Current password <span class="text-danger">*</span>
+                    </label>
+                    <input type="password"
+                           name="current_password"
+                           class="form-control shadow-sm"
+                           placeholder="Required to save changes"
+                           required>
+                </div>
+
+                <div class="col-md-6">
+                    <label class="form-label fw-semibold">New password (optional)</label>
+                    <input type="password"
+                           name="new_password"
+                           class="form-control shadow-sm"
+                           placeholder="Leave empty to keep current password">
+                </div>
+            </div>
+
+            <!-- ================= ACTIONS ================= -->
+            <div class="d-flex justify-content-between align-items-center mt-5">
+                <a href="{% url 'profile' %}"
+                   class="btn btn-outline-secondary rounded-pill px-4">
+                    Cancel
+                </a>
+
+                <button class="btn btn-primary rounded-pill px-5 shadow-sm">
+                    Save changes
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

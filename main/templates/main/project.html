@@ -1,0 +1,142 @@
+{% extends "main/base.html" %}
+{% block content %}
+
+<div class="container py-5">
+    <div class="card shadow-lg rounded-4 p-4 border-0">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2 class="fw-bold text-primary">{{ project.name }}</h2>
+            <a href="{% url 'dashboard' %}" class="btn btn-outline-secondary btn-sm shadow-sm">
+                &larr; Dashboard
+            </a>
+        </div>
+
+        <p class="text-muted mb-4">{{ project.description|default:"No description provided." }}</p>
+
+        <!-- LINKS -->
+        <div class="mb-4">
+            <h5 class="fw-semibold">Links</h5>
+            {% if project.links.exists %}
+                <ul class="list-group list-group-flush rounded-3 shadow-sm">
+                    {% for link in project.links.all %}
+                        <li class="list-group-item d-flex justify-content-between align-items-center border-0">
+                            <a href="{{ link.url }}" target="_blank" class="text-decoration-none fw-medium">{{ link.name }}</a>
+                            <small class="text-muted">{{ link.url }}</small>
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p class="text-muted">No links added yet.</p>
+            {% endif %}
+        </div>
+
+        <!-- PHOTOS -->
+        <div class="mb-4">
+            <h5 class="fw-semibold">Photos</h5>
+            {% if project.photos.exists %}
+                <div class="d-flex flex-wrap gap-3">
+                    {% for photo in project.photos.all %}
+                        <a href="{% url 'photo-detail' photo.id %}">
+                            <img src="{{ photo.photo.url }}"
+                                 class="img-fluid rounded shadow-sm project-photo"
+                                 style="width:150px; height:150px; object-fit:cover; cursor:pointer;"
+                                 data-bs-toggle="modal" data-bs-target="#photoModal"
+                                 data-photo-url="{{ photo.photo.url }}">
+                        </a>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <p class="text-muted">No photos added yet.</p>
+            {% endif %}
+        </div>
+
+        <!-- ACTION BUTTONS -->
+        <div class="d-flex gap-2 mt-3">
+            <a href="{% url 'update-project' project.id %}" class="btn btn-primary shadow-sm flex-fill">
+                Edit Project
+            </a>
+            <form method="post" action="{% url 'delete-project' project.id %}" class="flex-fill">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-danger shadow-sm w-100">Delete Project</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- PHOTO MODAL -->
+<div class="modal fade" id="photoModal" tabindex="-1" aria-labelledby="photoModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-content bg-transparent border-0">
+      <div class="modal-body p-0">
+        <img id="modalPhoto" src="" class="w-100 rounded shadow-lg" style="object-fit:contain;">
+      </div>
+    </div>
+  </div>
+</div>
+<!-- ================= COMMENTS ================= -->
+<div class="container pb-5">
+    <div class="card shadow-sm rounded-4 p-4 border-0 mt-4">
+
+        <h5 class="fw-semibold mb-3">Comments</h5>
+
+        {% if project.comments.exists %}
+            <div class="list-group rounded-4 shadow-sm">
+                {% for comment in project.comments.all %}
+                    <div class="list-group-item border-0 py-3">
+                        <div class="d-flex justify-content-between align-items-start">
+
+                            <div>
+                                <strong>{{ comment.user.username }}</strong>
+                                <p class="mb-1 mt-1">{{ comment.text }}</p>
+                                <small class="text-muted">
+                                    {{ comment.created_at|date:"M d, Y H:i" }}
+                                </small>
+                            </div>
+
+                            {% if user.is_authenticated and comment.user == user %}
+                                <form method="post"
+                                      action="{% url 'delete-comment' comment.id %}"
+                                      onsubmit="return confirm('Delete this comment?');">
+                                    {% csrf_token %}
+                                    <button class="btn btn-sm btn-outline-danger">
+                                        🗑
+                                    </button>
+                                </form>
+                            {% endif %}
+
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p class="text-muted mb-0">No comments yet.</p>
+        {% endif %}
+
+    </div>
+</div>
+
+
+<script>
+    // When a photo is clicked, show it in the modal
+    document.querySelectorAll('.project-photo').forEach(photo => {
+        photo.addEventListener('click', function() {
+            const url = this.dataset.photoUrl;
+            document.getElementById('modalPhoto').src = url;
+        });
+    });
+</script>
+
+<style>
+/* Card hover effect */
+.card:hover {
+    transform: translateY(-3px);
+    transition: all 0.2s ease-in-out;
+}
+
+/* Photo hover effect */
+.project-photo:hover {
+    transform: scale(1.05);
+    transition: transform 0.2s ease-in-out;
+}
+</style>
+
+{% endblock %}
