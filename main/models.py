@@ -10,13 +10,16 @@ class Link(models.Model):
     def __str__(self):
         return self.name
 
-
 class Photo(models.Model):
-    photo = CloudinaryField("image", folder="projects_photos")
+    photo = CloudinaryField(
+        "image",
+        folder="projects_photos",
+        blank=True,
+        null=True,
+    )
 
     def __str__(self):
         return f"Photo {self.id}"
-
 
 class Project(models.Model):
     user = models.ForeignKey(
