@@ -21,3 +21,5 @@ DATABASES = {
         "PORT": os.environ.get("PGPORT"),
     }
 }
+
+STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
