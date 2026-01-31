@@ -2,6 +2,11 @@ from django.core.mail import send_mail
 from django.conf import settings
 
 def send_registration_email(user):
+    if not settings.DEFAULT_FROM_EMAIL:
+        print('No DEFAULT_FROM_EMAIL Set')
+        return
+    print(f"Sending registration email to {user.username}")
+
     subject = "Welcome to World Of Code!"
     message = f"""
     Hi {user.first_name or user.username},
@@ -26,6 +31,10 @@ def send_registration_email(user):
     )
 
 def send_update_ac_email(user):
+    if not settings.DEFAULT_FROM_EMAIL:
+        print('No DEFAULT_FROM_EMAIL Set')
+        return
+
     subject = "Your Account was Updated!"
     message = f"""
         Hi {user.first_name or user.username},
@@ -52,6 +61,10 @@ def send_update_ac_email(user):
     )
 
 def send_project_comment_email(user, project, comment):
+    if not settings.DEFAULT_FROM_EMAIL:
+        print('No DEFAULT_FROM_EMAIL Set')
+        return
+
     subject = f"{project.name} was Commented!"
     message = f"""
             Hi {user.first_name or user.username},
