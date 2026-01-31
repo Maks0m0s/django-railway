@@ -27,7 +27,6 @@ def send_registration_email(user):
         message=message,
         from_email=settings.DEFAULT_FROM_EMAIL,
         recipient_list=recipient,
-        fail_silently=False,
     )
 
 def send_update_ac_email(user):
@@ -57,7 +56,6 @@ def send_update_ac_email(user):
         message=message,
         from_email=settings.DEFAULT_FROM_EMAIL,
         recipient_list=recipient,
-        fail_silently=True,
     )
 
 def send_project_comment_email(user, project, comment):
@@ -84,5 +82,4 @@ def send_project_comment_email(user, project, comment):
         message=message,
         from_email=settings.DEFAULT_FROM_EMAIL,
         recipient_list=recipient,
-        fail_silently=True,
     )
