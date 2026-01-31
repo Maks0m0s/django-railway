@@ -4,6 +4,8 @@ SECRET_KEY = os.environ.get('SECRET_KEY')
 
 DEBUG = False
 
+ROOT_URLCONF = "config.urls"
+
 ALLOWED_HOSTS = [ '*' ]
 
 DATABASES = {
