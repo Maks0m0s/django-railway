@@ -27,21 +27,20 @@ def create_project(request):
             link_obj = Link.objects.create(name=ln.strip(), url=url.strip())
             project.links.add(link_obj)
 
-    # UPLOAD PHOTOS
+    # UPLOAD PHOTOS (FIXED)
     for photo_file in uploaded_photos:
-        photo_obj = Photo.objects.create(photo=photo_file)
+        photo_obj = Photo()
+        photo_obj.photo = photo_file
+        photo_obj.save()
         project.photos.add(photo_obj)
 
-    project.save()
     dashboard.projects.add(project)
-    dashboard.save()
 
     return {'result': True, 'dashboard': dashboard}
 
 
 def update_project(request, pk):
     project = get_project(request.user, pk)
-
     if not project:
         return {'result': False, 'error': 'Project not found'}
 
@@ -50,29 +49,30 @@ def update_project(request, pk):
     link_names = request.POST.getlist('link_name[]')
     link_urls = request.POST.getlist('link_url[]')
     uploaded_photos = request.FILES.getlist('photos[]')
-    delete_photo_ids = request.POST.getlist('delete_photos[]')  # photos to delete
+    delete_photo_ids = request.POST.getlist('delete_photos[]')
 
     if not name or not name.strip():
         return {'result': False, 'error': 'Project name is required'}
 
-    # Update basic fields
     project.name = name
     project.description = description
     project.save()
 
-    # === DELETE SELECTED PHOTOS ===
+    # DELETE PHOTOS (FIXED)
     if delete_photo_ids:
-        photos_to_delete = Photo.objects.filter(id__in=delete_photo_ids, project__id=project.id)
+        photos_to_delete = project.photos.filter(id__in=delete_photo_ids)
         for photo in photos_to_delete:
             project.photos.remove(photo)
-            photo.delete()  # delete the file from storage
+            photo.delete()
 
-    # === ADD NEW PHOTOS ===
+    # ADD NEW PHOTOS (FIXED)
     for photo_file in uploaded_photos:
-        photo_obj = Photo.objects.create(photo=photo_file)
+        photo_obj = Photo()
+        photo_obj.photo = photo_file
+        photo_obj.save()
         project.photos.add(photo_obj)
 
-    # === UPDATE LINKS ===
+    # UPDATE LINKS
     project.links.clear()
     for ln, url in zip(link_names, link_urls):
         if ln.strip() and url.strip():
@@ -81,6 +81,7 @@ def update_project(request, pk):
 
     dashboard = Dashboard.objects.get(user=request.user)
     return {'result': True, 'dashboard': dashboard}
+
 
 def get_project(user, pk):
     return Project.objects.filter(id=pk, user=user).first()
