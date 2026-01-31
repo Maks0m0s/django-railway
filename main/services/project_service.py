@@ -6,6 +6,10 @@ def create_project(request):
     link_names = request.POST.getlist('link_name[]')
     link_urls = request.POST.getlist('link_url[]')
     uploaded_photos = request.FILES.getlist('photos[]')
+    try:
+        print(uploaded_photos)
+    except:
+        print(len(uploaded_photos))
 
     if not name or not name.strip():
         return {'result': False, 'error': 'Project name is required'}
@@ -33,6 +37,7 @@ def create_project(request):
         photo_obj.photo = photo_file
         photo_obj.save()
         project.photos.add(photo_obj)
+        print(photo_obj)
 
     dashboard.projects.add(project)
 
