@@ -11,3 +11,5 @@ packaging==25.0
 python-dotenv==1.2.1
 Pillow
 stripe>=8.0.0
+django-cloudinary-storage==0.3.0
+cloudinary==1.41.0

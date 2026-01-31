@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from cloudinary.models import CloudinaryField
 
 
 class Link(models.Model):
@@ -11,7 +12,7 @@ class Link(models.Model):
 
 
 class Photo(models.Model):
-    photo = models.ImageField(upload_to="media/projects_photos", blank=True, null=True)
+    photo = CloudinaryField("image", folder="projects_photos")
 
     def __str__(self):
         return f"Photo {self.id}"
