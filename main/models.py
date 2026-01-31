@@ -11,7 +11,7 @@ class Link(models.Model):
 
 
 class Photo(models.Model):
-    photo = models.ImageField(upload_to="projects_photos", blank=True, null=True)
+    photo = models.ImageField(upload_to="media/projects_photos", blank=True, null=True)
 
     def __str__(self):
         return f"Photo {self.id}"
