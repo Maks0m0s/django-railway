@@ -1,4 +1,8 @@
 from main.models import Dashboard, Project, Link, Photo
+# Allowed browser-friendly image extensions
+ALLOWED_IMAGE_EXTENSIONS = ['.png', '.jpg', '.jpeg', '.gif', '.webp']
+
+from os.path import splitext
 
 def create_project(request):
     name = request.POST.get('name')
@@ -6,10 +10,6 @@ def create_project(request):
     link_names = request.POST.getlist('link_name[]')
     link_urls = request.POST.getlist('link_url[]')
     uploaded_photos = request.FILES.getlist('photos[]')
-    try:
-        print(uploaded_photos)
-    except:
-        print(len(uploaded_photos))
 
     if not name or not name.strip():
         return {'result': False, 'error': 'Project name is required'}
@@ -19,11 +19,7 @@ def create_project(request):
     if dashboard.projects.filter(name=name).exists():
         return {'result': False, 'error': 'Project name already exists'}
 
-    project = Project.objects.create(
-        user=request.user,
-        name=name,
-        description=description,
-    )
+    project = Project.objects.create(user=request.user, name=name, description=description)
 
     # CREATE LINKS
     for ln, url in zip(link_names, link_urls):
@@ -31,19 +27,16 @@ def create_project(request):
             link_obj = Link.objects.create(name=ln.strip(), url=url.strip())
             project.links.add(link_obj)
 
-    # UPLOAD PHOTOS (FIXED)
+    # UPLOAD PHOTOS (only allowed formats)
     for photo_file in uploaded_photos:
-        if not photo_file.name:
-            photo_file.name = f'image_{photo_file.size}.png'
-
-        try:
+        ext = splitext(photo_file.name)[1].lower()
+        if ext in ALLOWED_IMAGE_EXTENSIONS:
             photo_obj = Photo.objects.create(photo=photo_file)
             project.photos.add(photo_obj)
-        except Exception as e:
-            print(f"Error saving photo: {e}")
+        else:
+            print(f"Skipped unsupported file type: {photo_file.name}")
 
     dashboard.projects.add(project)
-
     return {'result': True, 'dashboard': dashboard}
 
 
@@ -66,23 +59,21 @@ def update_project(request, pk):
     project.description = description
     project.save()
 
-    # DELETE PHOTOS (FIXED)
+    # DELETE PHOTOS
     if delete_photo_ids:
         photos_to_delete = project.photos.filter(id__in=delete_photo_ids)
         for photo in photos_to_delete:
             project.photos.remove(photo)
             photo.delete()
 
-    # ADD NEW PHOTOS (FIXED)
+    # ADD NEW PHOTOS (only allowed formats)
     for photo_file in uploaded_photos:
-        if not photo_file.name:
-            photo_file.name = f'image_{photo_file.size}.png'
-
-        try:
+        ext = splitext(photo_file.name)[1].lower()
+        if ext in ALLOWED_IMAGE_EXTENSIONS:
             photo_obj = Photo.objects.create(photo=photo_file)
             project.photos.add(photo_obj)
-        except Exception as e:
-            print(f"Error saving photo: {e}")
+        else:
+            print(f"Skipped unsupported file type: {photo_file.name}")
 
     # UPDATE LINKS
     project.links.clear()

@@ -10,7 +10,7 @@ class Link(models.Model):
         return self.name
 
 class Photo(models.Model):
-    photo = CloudinaryField("image", folder="projects_photos", resource_type="image", format="auto", blank=True, null=True)
+    photo = CloudinaryField("image", folder="projects_photos", resource_type="image", blank=True, null=True)
 
     def __str__(self):
         return f"Photo {self.id}"
