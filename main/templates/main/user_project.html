@@ -18,25 +18,46 @@
         </p>
 
         <!-- LIKE SECTION -->
-        {% if user.is_authenticated %}
-            <form method="post" action="{% url 'toggle-like' profile_user.id project.id %}">
-                {% csrf_token %}
-                <button
-                    type="submit"
-                    class="btn {% if user in project.likes.all %}btn-danger{% else %}btn-outline-danger{% endif %} rounded-pill px-4"
-                >
-                    {% if user in project.likes.all %}
-                        ❤️ Liked
-                    {% else %}
-                        🤍 Like
-                    {% endif %}
-                </button>
-            </form>
-        {% endif %}
+        <div class="d-flex align-items-center gap-3 mb-4">
 
-        <span class="text-muted">
-            <strong>{{ project.likes.count }}</strong> likes
-        </span>
+            {% if user.is_authenticated %}
+                <form method="post"
+                      action="{% url 'toggle-like' profile_user.id project.id %}"
+                      class="mb-0">
+                    {% csrf_token %}
+                    <button
+                        type="submit"
+                        class="btn rounded-pill px-4
+                               {% if user in project.likes.all %}
+                                   btn-danger
+                               {% else %}
+                                   btn-outline-danger
+                               {% endif %}">
+                        {% if user in project.likes.all %}
+                            ❤️ Liked
+                        {% else %}
+                            🤍 Like
+                        {% endif %}
+                    </button>
+                </form>
+            {% endif %}
+
+            <!-- Likes count -->
+            <div
+                class="rounded-pill px-4 py-2
+                       {% if user.is_authenticated %}
+                           border text-muted
+                       {% else %}
+                           btn btn-outline-secondary disabled
+                       {% endif %}"
+                style="cursor: default;"
+            >
+                ❤️ <strong>{{ project.likes.count }}</strong>
+                <span class="ms-1">likes</span>
+            </div>
+
+        </div>
+
 
         <hr>
 
