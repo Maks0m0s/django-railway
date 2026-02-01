@@ -85,23 +85,28 @@
         <!-- PHOTOS -->
         <div class="mb-4">
             <h5 class="fw-semibold">Photos</h5>
+
             {% if project.photos.exists %}
                 <div class="d-flex flex-wrap gap-3">
                     {% for photo in project.photos.all %}
-                        <a href="{% url 'photo-detail' photo.id %}">
-                            <img src="{{ photo.photo.url }}"
-                                 class="img-fluid rounded shadow-sm project-photo"
-                                 style="width:150px; height:150px; object-fit:cover; cursor:pointer;"
-                                 data-bs-toggle="modal"
-                                 data-bs-target="#photoModal"
-                                 data-photo-url="{{ photo.photo.url }}">
-                        </a>
+                        {% with img_url=photo.photo.url|add:'?f_auto,q_auto' %}
+                            <img
+                                src="{{ img_url }}"
+                                class="img-fluid rounded shadow-sm project-photo"
+                                style="width:150px; height:150px; object-fit:cover; cursor:pointer;"
+                                data-bs-toggle="modal"
+                                data-bs-target="#photoModal"
+                                data-photo-url="{{ img_url }}"
+                                alt="Project photo"
+                            >
+                        {% endwith %}
                     {% endfor %}
                 </div>
             {% else %}
                 <p class="text-muted">No photos added yet.</p>
             {% endif %}
         </div>
+
 
         <hr>
 
@@ -166,40 +171,37 @@
 </div>
 
 <!-- PHOTO MODAL -->
-<div class="modal fade" id="photoModal" tabindex="-1">
-    <div class="modal-dialog modal-dialog-centered modal-lg">
+<div class="modal fade" id="photoModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-xl">
         <div class="modal-content bg-transparent border-0">
-            <div class="modal-body p-0">
-                <img id="modalPhoto" class="w-100 rounded shadow-lg">
+            <div class="modal-body p-0 text-center">
+                <img
+                    id="modalPhoto"
+                    class="img-fluid rounded shadow-lg"
+                    style="max-height:90vh; object-fit:contain;"
+                    alt="Full photo"
+                >
             </div>
         </div>
     </div>
 </div>
 
+
 <script>
-    // Photo modal
+document.addEventListener('DOMContentLoaded', function () {
+    const modalPhoto = document.getElementById('modalPhoto');
+
     document.querySelectorAll('.project-photo').forEach(photo => {
         photo.addEventListener('click', function () {
-            document.getElementById('modalPhoto').src = this.dataset.photoUrl;
+            modalPhoto.src = this.dataset.photoUrl;
         });
     });
 
-    // Like button (AJAX-ready)
-    const likeBtn = document.getElementById('likeBtn');
-    if (likeBtn) {
-        likeBtn.addEventListener('click', () => {
-            fetch(`/projects/{{ project.id }}/like/`, {
-                method: 'POST',
-                headers: {
-                    'X-CSRFToken': '{{ csrf_token }}',
-                }
-            })
-            .then(res => res.json())
-            .then(data => {
-                document.getElementById('likesCount').innerText = data.likes;
-            });
-        });
-    }
+    // Clear image when modal closes (prevents old image flash)
+    document.getElementById('photoModal').addEventListener('hidden.bs.modal', function () {
+        modalPhoto.src = '';
+    });
+});
 </script>
 
 <style>
