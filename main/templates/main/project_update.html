@@ -48,6 +48,15 @@
             <div class="mb-3">
                 <label class="fw-semibold">Photos</label>
                 <input type="file" name="photos[]" multiple class="form-control shadow-sm">
+
+                <!-- Convert HEIC link -->
+                <div class="mt-1">
+                    <small class="text-muted">
+                        Have HEIC photos? <a href="https://www.iloveimg.com/convert-to-jpg/heic-to-jpg" target="_blank" class="text-decoration-none">
+                        Convert them to .jpg here</a>.
+                    </small>
+                </div>
+
                 {% if project and project.photos.exists %}
                     <div class="d-flex flex-wrap gap-3 mt-2">
                         {% for photo in project.photos.all %}
@@ -59,6 +68,7 @@
                     </div>
                 {% endif %}
             </div>
+
 
             <button class="btn btn-success w-100 py-2 shadow-sm">
                 {% if project %} Save Changes {% else %} Create Project {% endif %}
