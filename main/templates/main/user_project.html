@@ -92,20 +92,11 @@
                 <div class="d-flex flex-wrap gap-3">
                     {% for photo in project.photos.all %}
                         <a href="{% url 'photo-detail' photo.id %}" style="text-decoration:none;">
-                            {% with thumb=photo.photo.url|add:'?f_auto,q_auto,w_300,h_300,c_fill' %}
-                                {% with full=photo.photo.url|add:'?f_auto,q_auto' %}
-                                    <img
-                                        src="{{ thumb }}"
-                                        class="img-fluid rounded shadow-sm project-photo"
-                                        style="width:150px; height:150px; object-fit:cover; cursor:pointer;"
-                                        data-bs-toggle="modal"
-                                        data-bs-target="#photoModal"
-                                        data-photo-url="{{ full }}"
-                                        alt="Project photo"
-                                        loading="lazy"
-                                    >
-                                {% endwith %}
-                            {% endwith %}
+                            <img src="{{ photo.photo.url }}"
+                                 class="img-fluid rounded shadow-sm project-photo"
+                                 style="width:150px; height:150px; object-fit:cover; cursor:pointer;"
+                                 data-bs-toggle="modal" data-bs-target="#photoModal"
+                                 data-photo-url="{{ photo.photo.url }}">
                         </a>
                     {% endfor %}
                 </div>
