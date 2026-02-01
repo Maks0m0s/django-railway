@@ -36,6 +36,7 @@ urlpatterns = [
     path('users/<int:user_id>/project/<int:pk>/add-comment/', ProjectFeedbackViewSet.as_view({'post':'add_comment'}), name='add-comment'),
     path('users/<int:user_id>/project/<int:project_id>/delete-comment/<int:pk>/', ProjectFeedbackViewSet.as_view({'post': 'delete_comment'}),
          name='delete-comment'),
+    path('users/<int:user_id>/project/<int:pk>/toggle-like/', ProjectFeedbackViewSet.as_view({'post':'toggle_like'}), name='toggle-like'),
     path('users/<int:pk>/dashboard/', ProjectViewSet.as_view({'get':'user_dashboard'}), name='user-dashboard'),
 
     path('dashboard/', ProjectViewSet.as_view({'get':'list'}), name='dashboard'),

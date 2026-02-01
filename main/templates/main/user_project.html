@@ -18,19 +18,25 @@
         </p>
 
         <!-- LIKE SECTION -->
-        <div class="d-flex align-items-center gap-3 mb-4">
-            <button
-                id="likeBtn"
-                class="btn btn-outline-danger rounded-pill px-4"
-                data-project-id="{{ project.id }}"
-            >
-                ❤️ Like
-            </button>
+        {% if user.is_authenticated %}
+            <form method="post" action="{% url 'toggle-like' profile_user.id project.id %}">
+                {% csrf_token %}
+                <button
+                    type="submit"
+                    class="btn {% if user in project.likes.all %}btn-danger{% else %}btn-outline-danger{% endif %} rounded-pill px-4"
+                >
+                    {% if user in project.likes.all %}
+                        ❤️ Liked
+                    {% else %}
+                        🤍 Like
+                    {% endif %}
+                </button>
+            </form>
+        {% endif %}
 
-            <span class="text-muted">
-                <strong id="likesCount">{{ project.likes.count }}</strong> likes
-            </span>
-        </div>
+        <span class="text-muted">
+            <strong>{{ project.likes.count }}</strong> likes
+        </span>
 
         <hr>
 

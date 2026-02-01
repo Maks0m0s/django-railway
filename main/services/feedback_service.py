@@ -1,5 +1,5 @@
 from django.contrib.auth.models import User
-from main.models import Comment
+from main.models import Comment, Project
 from main.services.project_service import get_project
 from main.services.email_service import send_project_comment_email
 
@@ -39,8 +39,31 @@ def delete_project_comment(user_id, project_id, pk):
     comment.delete()
     return {'result':True, 'profile_user':profile_user, 'project':project}
 
-def add_user_comment(request, user_id, pk):
-    return
+def toggle_like(request, user_id, pk):
+    try:
+        profile_user = User.objects.get(id=user_id)
+        project = Project.objects.get(id=pk)
 
-def delete_user_comment(request, user_id, project_id, pk):
-    return
+        if request.user in project.likes.all():
+            project.likes.remove(request.user)
+        else:
+            project.likes.add(request.user)
+
+        return {
+            'result': True,
+            'project': project,
+            'profile_user': profile_user
+        }
+
+    except User.DoesNotExist:
+        return {'result': False, 'error': 'User not found'}
+
+    except Project.DoesNotExist:
+        return {'result': False, 'error': 'Project not found'}
+
+
+# def add_user_comment(request, user_id, pk):
+#     return
+#
+# def delete_user_comment(request, user_id, project_id, pk):
+#     return
