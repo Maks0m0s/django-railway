@@ -1,5 +1,7 @@
 {% extends "main/base.html" %}
 {% block content %}
+{% load cloudinary %}
+
 
 <div class="container py-5">
     <div class="card shadow-lg rounded-4 p-4 border-0">
@@ -47,26 +49,28 @@
             {% if project.photos.exists %}
                 <div class="d-flex flex-wrap gap-3">
                     {% for photo in project.photos.all %}
-                        {% with thumb=photo.photo.url|add:'?f_auto,q_auto,w_300,h_300,c_fill' %}
-                            {% with full=photo.photo.url|add:'?f_auto,q_auto' %}
-                                <img
-                                    src="{{ thumb }}"
-                                    class="img-fluid rounded shadow-sm project-photo"
-                                    style="width:150px; height:150px; object-fit:cover; cursor:pointer;"
-                                    data-bs-toggle="modal"
-                                    data-bs-target="#photoModal"
-                                    data-photo-url="{{ full }}"
-                                    alt="Project photo"
-                                    loading="lazy"
-                                >
-                            {% endwith %}
-                        {% endwith %}
+                        <a href="{% url 'photo-detail' photo.id %}" style="text-decoration:none;">
+                            {% cloudinary photo.photo
+                                width=300
+                                height=300
+                                crop="fill"
+                                format="jpg"
+                                quality="auto"
+                                class="img-fluid rounded shadow-sm project-photo"
+                                style="width:150px; height:150px; object-fit:cover; cursor:pointer;"
+                                data-bs-toggle="modal"
+                                data-bs-target="#photoModal"
+                                data-photo-id="{{ photo.id }}"
+                            %}
+                        </a>
+
                     {% endfor %}
                 </div>
             {% else %}
                 <p class="text-muted">No photos added yet.</p>
             {% endif %}
         </div>
+
 
 
         <!-- ACTION BUTTONS -->
@@ -83,7 +87,7 @@
 </div>
 
 <!-- PHOTO MODAL -->
-<div class="modal fade" id="photoModal" tabindex="-1" aria-hidden="true">
+<div class="modal fade" id="photoModal" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered modal-xl">
         <div class="modal-content bg-transparent border-0">
             <div class="modal-body p-0 text-center">
@@ -91,12 +95,12 @@
                     id="modalPhoto"
                     class="img-fluid rounded shadow-lg"
                     style="max-height:90vh; object-fit:contain;"
-                    alt="Full photo"
                 >
             </div>
         </div>
     </div>
 </div>
+
 
 <!-- ================= COMMENTS ================= -->
 <div class="container pb-5">
@@ -142,19 +146,20 @@
 
 
 <script>
-document.addEventListener('DOMContentLoaded', function () {
+document.addEventListener('DOMContentLoaded', () => {
     const modalPhoto = document.getElementById('modalPhoto');
 
-    document.querySelectorAll('.project-photo').forEach(photo => {
-        photo.addEventListener('click', function () {
-            modalPhoto.src = this.dataset.photoUrl;
+    document.querySelectorAll('.project-photo').forEach(img => {
+        img.addEventListener('click', () => {
+            // force Cloudinary conversion again for full size
+            modalPhoto.src = img.src.replace('/w_300,h_300,c_fill/', '/f_jpg,q_auto/');
         });
     });
 
-    // Clear image when modal closes (prevents old image flash)
-    document.getElementById('photoModal').addEventListener('hidden.bs.modal', function () {
-        modalPhoto.src = '';
-    });
+    document.getElementById('photoModal')
+        .addEventListener('hidden.bs.modal', () => {
+            modalPhoto.src = '';
+        });
 });
 </script>
 
