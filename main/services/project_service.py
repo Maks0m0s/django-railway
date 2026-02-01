@@ -33,8 +33,12 @@ def create_project(request):
 
     # UPLOAD PHOTOS (FIXED)
     for photo_file in uploaded_photos:
-        photo_obj = Photo()
-        photo_obj.photo = photo_file
+        # Ensure the file has a proper name
+        if not hasattr(photo_file, 'name') or not photo_file.name:
+            photo_file.name = f'image_{photo_file.size}.heic'
+
+        # Create and save Photo instance
+        photo_obj = Photo(photo=photo_file)
         photo_obj.save()
         project.photos.add(photo_obj)
         print(photo_obj)
@@ -72,10 +76,15 @@ def update_project(request, pk):
 
     # ADD NEW PHOTOS (FIXED)
     for photo_file in uploaded_photos:
-        photo_obj = Photo()
-        photo_obj.photo = photo_file
+        # Ensure the file has a proper name
+        if not hasattr(photo_file, 'name') or not photo_file.name:
+            photo_file.name = f'image_{photo_file.size}.heic'
+
+        # Create and save Photo instance
+        photo_obj = Photo(photo=photo_file)
         photo_obj.save()
         project.photos.add(photo_obj)
+        print(photo_obj)
 
     # UPDATE LINKS
     project.links.clear()
