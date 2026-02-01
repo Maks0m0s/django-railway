@@ -1,10 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
 from cloudinary.models import CloudinaryField
-from PIL import Image
-from io import BytesIO
-from django.core.files.base import ContentFile
-
 
 class Link(models.Model):
     name = models.CharField(max_length=100)
@@ -14,25 +10,7 @@ class Link(models.Model):
         return self.name
 
 class Photo(models.Model):
-    photo = CloudinaryField("image", folder="projects_photos", blank=True, null=True)
-
-    def save(self, *args, **kwargs):
-        if self.photo and self.photo.file:
-            try:
-                # Open the uploaded image
-                img = Image.open(self.photo.file)
-                # Convert HEIC/HEIF to PNG
-                if img.format in ['HEIC', 'HEIF']:
-                    img = img.convert('RGB')  # convert to RGB for PNG/JPG
-                    buffer = BytesIO()
-                    img.save(buffer, format='PNG')
-                    # Replace the original file with PNG
-                    self.photo.save(f"{self.photo.name.split('.')[0]}.png", ContentFile(buffer.getvalue()), save=False)
-                    print("Image converted to .png")
-            except Exception as e:
-                print("Image conversion error:", e)
-
-        super().save(*args, **kwargs)
+    photo = CloudinaryField("image", folder="projects_photos", resource_type="image", format="auto", blank=True, null=True)
 
     def __str__(self):
         return f"Photo {self.id}"
