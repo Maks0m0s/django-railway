@@ -14,6 +14,7 @@ class Photo(models.Model):
     photo = CloudinaryField(
         "image",
         folder="projects_photos",
+        resource_type="image",
         blank=True,
         null=True,
     )

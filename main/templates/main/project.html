@@ -43,22 +43,31 @@
         <!-- PHOTOS -->
         <div class="mb-4">
             <h5 class="fw-semibold">Photos</h5>
+
             {% if project.photos.exists %}
                 <div class="d-flex flex-wrap gap-3">
                     {% for photo in project.photos.all %}
-                        <a href="{% url 'photo-detail' photo.id %}">
-                            <img src="{{ photo.photo.url }}"
-                                 class="img-fluid rounded shadow-sm project-photo"
-                                 style="width:150px; height:150px; object-fit:cover; cursor:pointer;"
-                                 data-bs-toggle="modal" data-bs-target="#photoModal"
-                                 data-photo-url="{{ photo.photo.url }}">
-                        </a>
+                        {% with thumb=photo.photo.url|add:'?f_auto,q_auto,w_300,h_300,c_fill' %}
+                            {% with full=photo.photo.url|add:'?f_auto,q_auto' %}
+                                <img
+                                    src="{{ thumb }}"
+                                    class="img-fluid rounded shadow-sm project-photo"
+                                    style="width:150px; height:150px; object-fit:cover; cursor:pointer;"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#photoModal"
+                                    data-photo-url="{{ full }}"
+                                    alt="Project photo"
+                                    loading="lazy"
+                                >
+                            {% endwith %}
+                        {% endwith %}
                     {% endfor %}
                 </div>
             {% else %}
                 <p class="text-muted">No photos added yet.</p>
             {% endif %}
         </div>
+
 
         <!-- ACTION BUTTONS -->
         <div class="d-flex gap-2 mt-3">
@@ -74,15 +83,21 @@
 </div>
 
 <!-- PHOTO MODAL -->
-<div class="modal fade" id="photoModal" tabindex="-1" aria-labelledby="photoModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered modal-lg">
-    <div class="modal-content bg-transparent border-0">
-      <div class="modal-body p-0">
-        <img id="modalPhoto" src="" class="w-100 rounded shadow-lg" style="object-fit:contain;">
-      </div>
+<div class="modal fade" id="photoModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-xl">
+        <div class="modal-content bg-transparent border-0">
+            <div class="modal-body p-0 text-center">
+                <img
+                    id="modalPhoto"
+                    class="img-fluid rounded shadow-lg"
+                    style="max-height:90vh; object-fit:contain;"
+                    alt="Full photo"
+                >
+            </div>
+        </div>
     </div>
-  </div>
 </div>
+
 <!-- ================= COMMENTS ================= -->
 <div class="container pb-5">
     <div class="card shadow-sm rounded-4 p-4 border-0 mt-4">
@@ -127,13 +142,20 @@
 
 
 <script>
-    // When a photo is clicked, show it in the modal
+document.addEventListener('DOMContentLoaded', function () {
+    const modalPhoto = document.getElementById('modalPhoto');
+
     document.querySelectorAll('.project-photo').forEach(photo => {
-        photo.addEventListener('click', function() {
-            const url = this.dataset.photoUrl;
-            document.getElementById('modalPhoto').src = url;
+        photo.addEventListener('click', function () {
+            modalPhoto.src = this.dataset.photoUrl;
         });
     });
+
+    // Clear image when modal closes (prevents old image flash)
+    document.getElementById('photoModal').addEventListener('hidden.bs.modal', function () {
+        modalPhoto.src = '';
+    });
+});
 </script>
 
 <style>
