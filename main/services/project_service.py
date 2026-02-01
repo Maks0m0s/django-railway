@@ -33,15 +33,14 @@ def create_project(request):
 
     # UPLOAD PHOTOS (FIXED)
     for photo_file in uploaded_photos:
-        # Ensure the file has a proper name
-        if not hasattr(photo_file, 'name') or not photo_file.name:
-            photo_file.name = f'image_{photo_file.size}.heic'
+        if not photo_file.name:
+            photo_file.name = f'image_{photo_file.size}.png'
 
-        # Create and save Photo instance
-        photo_obj = Photo(photo=photo_file)
-        photo_obj.save()
-        project.photos.add(photo_obj)
-        print(photo_obj)
+        try:
+            photo_obj = Photo.objects.create(photo=photo_file)
+            project.photos.add(photo_obj)
+        except Exception as e:
+            print(f"Error saving photo: {e}")
 
     dashboard.projects.add(project)
 
@@ -76,15 +75,14 @@ def update_project(request, pk):
 
     # ADD NEW PHOTOS (FIXED)
     for photo_file in uploaded_photos:
-        # Ensure the file has a proper name
-        if not hasattr(photo_file, 'name') or not photo_file.name:
-            photo_file.name = f'image_{photo_file.size}.heic'
+        if not photo_file.name:
+            photo_file.name = f'image_{photo_file.size}.png'
 
-        # Create and save Photo instance
-        photo_obj = Photo(photo=photo_file)
-        photo_obj.save()
-        project.photos.add(photo_obj)
-        print(photo_obj)
+        try:
+            photo_obj = Photo.objects.create(photo=photo_file)
+            project.photos.add(photo_obj)
+        except Exception as e:
+            print(f"Error saving photo: {e}")
 
     # UPDATE LINKS
     project.links.clear()
