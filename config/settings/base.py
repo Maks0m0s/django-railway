@@ -197,7 +197,9 @@ STRIPE_SECRET_KEY = os.getenv("STRIPE_SECRET_KEY", "")
 # =========================
 
 CSRF_TRUSTED_ORIGINS = [
-    "https://*.railway.app",
+    "https://www.worldofcode.site",
+    "https://worldofcode.site",
+    "https://*.up.railway.app",
 ]
 
 SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
