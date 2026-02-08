@@ -24,7 +24,6 @@ class ProjectViewSet(viewsets.ViewSet):
 
     # ===== PROJECT DASHBOARD =====
     def list(self, request):
-        is_auth(request)
         dashboard = Dashboard.objects.filter(user=request.user).first()
         return Response(
             {'dashboard': dashboard},
@@ -33,7 +32,6 @@ class ProjectViewSet(viewsets.ViewSet):
 
     # ===== PROJECT DETAILS =====
     def retrieve(self, request, pk=None):
-        is_auth(request)
         project = get_project(request.user, pk)
         if not project:
             return Response(

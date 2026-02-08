@@ -19,7 +19,6 @@ class ProfileViewSet(viewsets.ViewSet):
         return [IsAuthenticatedOrRedirect()]
 
     def list(self, request):
-        is_auth(request)
         # Only authenticated users can see their own profile
         dashboard = get_dashboard(request.user)
         projects = dashboard.projects.all() if dashboard else []
