@@ -2,7 +2,6 @@ from rest_framework import viewsets, permissions
 from django.shortcuts import render
 from rest_framework.decorators import action
 from django.contrib.auth.models import User
-from main.authentication import is_auth
 
 from main.services.dashboard_service import get_dashboard
 from main.permissions import IsAuthenticatedOrRedirect

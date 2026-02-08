@@ -3,8 +3,6 @@ from rest_framework.renderers import TemplateHTMLRenderer
 from rest_framework.response import Response
 from rest_framework.decorators import action
 from django.contrib.auth.models import User
-from main.authentication import is_auth
-
 
 from main.services.dashboard_service import get_dashboard
 from main.services.project_service import create_project, update_project, delete_project, get_project
