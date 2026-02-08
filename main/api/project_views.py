@@ -3,7 +3,8 @@ from rest_framework.renderers import TemplateHTMLRenderer
 from rest_framework.response import Response
 from rest_framework.decorators import action
 from django.contrib.auth.models import User
-from django.shortcuts import redirect
+from main.authentication import is_auth
+
 
 from main.services.dashboard_service import get_dashboard
 from main.services.project_service import create_project, update_project, delete_project, get_project
@@ -23,6 +24,7 @@ class ProjectViewSet(viewsets.ViewSet):
 
     # ===== PROJECT DASHBOARD =====
     def list(self, request):
+        is_auth(request)
         dashboard = Dashboard.objects.filter(user=request.user).first()
         return Response(
             {'dashboard': dashboard},
@@ -31,6 +33,7 @@ class ProjectViewSet(viewsets.ViewSet):
 
     # ===== PROJECT DETAILS =====
     def retrieve(self, request, pk=None):
+        is_auth(request)
         project = get_project(request.user, pk)
         if not project:
             return Response(

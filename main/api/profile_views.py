@@ -2,6 +2,7 @@ from rest_framework import viewsets, permissions
 from django.shortcuts import render
 from rest_framework.decorators import action
 from django.contrib.auth.models import User
+from main.authentication import is_auth
 
 from main.services.dashboard_service import get_dashboard
 from main.permissions import IsAuthenticatedOrRedirect
@@ -18,6 +19,7 @@ class ProfileViewSet(viewsets.ViewSet):
         return [IsAuthenticatedOrRedirect()]
 
     def list(self, request):
+        is_auth(request)
         # Only authenticated users can see their own profile
         dashboard = get_dashboard(request.user)
         projects = dashboard.projects.all() if dashboard else []

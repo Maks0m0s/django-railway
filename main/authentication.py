@@ -1,5 +1,6 @@
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework.exceptions import AuthenticationFailed
+from django.shortcuts import redirect
 
 class CookieJWTAuthentication(JWTAuthentication):
     def authenticate(self, request):
@@ -15,3 +16,7 @@ class CookieJWTAuthentication(JWTAuthentication):
         except Exception:
             # 👇 Don’t crash; just let it act as an anonymous request
             return None
+
+def is_auth(request):
+    if not request.user.is_authenticated:
+        return redirect("auth-login")
