@@ -45,6 +45,9 @@ urlpatterns = [
     path('update-project/<int:pk>/', ProjectViewSet.as_view({'get': 'update_project', 'post': 'update_project'}), name='update-project'),
     path('delete-project/<int:pk>/', ProjectViewSet.as_view({'post': 'delete_project'}), name='delete-project'),
 
+    path('profile/add-link/', ProfileViewSet.as_view({'post':'add_profile_link'}), name='add-profile-link'),
+    path('profile/delete-link/<int:pk>/', ProfileViewSet.as_view({'post': 'delete_profile_link'}), name='delete-profile-link'),
+
     path('search/', search_users, name='search'),
     path('admin-profile/', AuthViewSet.as_view({'get':'get_admin'}), name='get-admin')
 ]
