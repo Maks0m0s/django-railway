@@ -31,7 +31,7 @@ def send_registration_email(user):
             message=message,
             from_email=settings.DEFAULT_FROM_EMAIL,
             recipient_list=recipient,
-            fail_silently=False,  # will raise exception if fails
+            fail_silently=True,  # will raise exception if fails
         )
         print("Registration email sent successfully!")
     except Exception as e:
@@ -67,7 +67,7 @@ def send_update_ac_email(user):
             message=message,
             from_email=settings.DEFAULT_FROM_EMAIL,
             recipient_list=recipient,
-            fail_silently=False,
+            fail_silently=True,
         )
         print("Account update email sent successfully!")
     except Exception as e:
@@ -100,7 +100,7 @@ def send_project_comment_email(user, project, comment):
             message=message,
             from_email=settings.DEFAULT_FROM_EMAIL,
             recipient_list=recipient,
-            fail_silently=False,
+            fail_silently=True,
         )
         print("Project comment email sent successfully!")
     except Exception as e:
