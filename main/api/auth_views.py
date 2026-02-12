@@ -99,6 +99,7 @@ class AuthViewSet(viewsets.ViewSet):
     @action(detail=False, methods=['get'], url_path='get_admin')
     def get_admin(self, request):
         admin = get_admin()
+        links = admin.profile_links.all()
         dashboard = get_dashboard(admin)
         projects = dashboard.projects.all() if dashboard else []
-        return Response({'profile_user':admin, 'projects':projects}, template_name='main/user_profile.html')
+        return Response({'profile_user':admin, 'links':links, 'projects':projects}, template_name='main/user_profile.html')
