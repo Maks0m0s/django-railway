@@ -2,6 +2,7 @@ from rest_framework import viewsets, permissions
 from rest_framework.renderers import TemplateHTMLRenderer
 from rest_framework.response import Response
 from rest_framework.decorators import action
+from django.shortcuts import redirect
 
 from main.services.feedback_service import add_project_comment, delete_project_comment, toggle_like
 from main.permissions import IsAuthenticatedOrRedirect
@@ -14,8 +15,7 @@ class ProjectFeedbackViewSet(viewsets.ViewSet):
     def add_comment(self, request, user_id=None, pk=None):
         result = add_project_comment(request, user_id, pk)
         if result['result']:
-            return Response({'project':result['project'], 'profile_user':result['profile_user']}, template_name="main/user_project.html")
-
+            return redirect('user-project')
         return Response(
             {'error': f"{result['error']}"},
             template_name="main/error.html",
@@ -26,8 +26,7 @@ class ProjectFeedbackViewSet(viewsets.ViewSet):
     def delete_comment(self, request, user_id=None, project_id=None, pk=None):
         result = delete_project_comment(user_id, project_id, pk)
         if result['result']:
-            return Response({'project':result['project'], 'profile_user':result['profile_user']}, template_name="main/user_project.html")
-
+            return redirect('user-project')
         return Response(
             {'error': f"{result['error']}"},
             template_name="main/error.html",
@@ -38,7 +37,7 @@ class ProjectFeedbackViewSet(viewsets.ViewSet):
     def toggle_like(self, request, user_id=None, pk=None):
         result = toggle_like(request, user_id, pk)
         if result['result']:
-            return Response({'project':result['project'], 'profile_user':result['profile_user']}, template_name="main/user_project.html")
+            return redirect('user-project')
         return Response(
             {'error': f"{result['error']}"},
             template_name="main/error.html",
