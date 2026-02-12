@@ -63,6 +63,43 @@
         </div>
     </div>
 
+    <!-- ================= LINKS ================= -->
+    <div class="card shadow-sm border-0 rounded-4 p-4 mb-4">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h4 class="fw-bold mb-0">Links</h4>
+        </div>
+
+        {% if links %}
+            <ul class="list-group list-group-flush rounded-3 shadow-sm">
+                {% for link in links %}
+                    <li class="list-group-item d-flex justify-content-between align-items-center border-0">
+
+                        <!-- LEFT: URL -->
+                        <small class="text-muted text-truncate" style="max-width:50%;">
+                            {{ link.url }}
+                        </small>
+
+                        <!-- RIGHT: NAME -->
+                        <a href="{{ link.url }}"
+                           target="_blank"
+                           class="fw-semibold text-decoration-none text-primary">
+                            {{ link.name }}
+                        </a>
+
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <div class="text-center p-4 rounded-4"
+                 style="background:#f5f9ff; border:1px dashed #cfe2ff;">
+                <div style="font-size:2rem;">🔗</div>
+                <p class="text-muted mb-0 mt-2">
+                    No links added yet.
+                </p>
+            </div>
+        {% endif %}
+    </div>
+
     <!-- ================= PROJECTS PREVIEW ================= -->
     <div class="card shadow-sm border-0 rounded-4 p-4">
         <div class="d-flex justify-content-between align-items-center mb-3">

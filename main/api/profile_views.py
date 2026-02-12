@@ -62,12 +62,14 @@ class ProfileViewSet(viewsets.ViewSet):
 
         dashboard = get_dashboard(profile_user)
         projects = dashboard.projects.all() if dashboard else []
+        links = profile_user.profile_links.all()
 
         return render(
             request,
             'main/user_profile.html',
             {
                 'profile_user': profile_user,
+                'links':links,
                 'projects': projects
             }
         )
