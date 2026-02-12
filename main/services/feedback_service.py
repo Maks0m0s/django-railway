@@ -2,9 +2,11 @@ from django.contrib.auth.models import User
 from main.models import Comment, Project
 from main.services.project_service import get_project
 from main.services.email_service import send_project_comment_email
+from django.shortcuts import get_object_or_404
+
 
 def add_project_comment(request, user_id, pk):
-    profile_user = User.objects.get(id=user_id)
+    profile_user = get_object_or_404(User, id=user_id)
     project = get_project(profile_user, pk)
 
     if not project:
@@ -26,9 +28,9 @@ def add_project_comment(request, user_id, pk):
     return {'result':True, 'profile_user':profile_user, 'project':project}
 
 def delete_project_comment(user_id, project_id, pk):
-    profile_user = User.objects.get(id=user_id)
+    profile_user = get_object_or_404(User, id=user_id)
     project = get_project(profile_user, project_id)
-    comment = Comment.objects.filter(id=pk)
+    comment = get_object_or_404(Comment, id=pk)
 
     if not project:
         return {'result':False, 'error':'Project not found'}
@@ -41,8 +43,8 @@ def delete_project_comment(user_id, project_id, pk):
 
 def toggle_like(request, user_id, pk):
     try:
-        profile_user = User.objects.get(id=user_id)
-        project = Project.objects.get(id=pk)
+        profile_user = get_object_or_404(User, id=user_id)
+        project = get_object_or_404(Project, id=pk)
 
         if request.user in project.likes.all():
             project.likes.remove(request.user)
