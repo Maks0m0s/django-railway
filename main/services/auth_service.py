@@ -18,8 +18,6 @@ def register(validated_data):
 
     create_dashboard(user)
 
-    create_profile_settings(user)
-
     send_registration_email(user)
 
     return user
