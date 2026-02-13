@@ -1,28 +1,26 @@
 from main.models import ProfileSettings
 
-def get_settings(request):
-    settings = request.user.settings
-    if not settings:
-        settings = ProfileSettings.objects.create(user=request.user)
+
+def get_settings(user):
+    settings, _ = ProfileSettings.objects.get_or_create(user=user)
     return settings
 
-def update_settings(request):
-    settings = request.user.settings
-    if not settings:
-        return {'result':False, 'error':"Profile Settings doesn't exist"}
 
-    account_type = request.POST.get('account_type', '')
-    hide_email = request.POST.get('hide_email')
+def update_settings(user, data):
+    settings, _ = ProfileSettings.objects.get_or_create(user=user)
 
-    is_public = settings.is_public
+    account_type = data.get('account_type', '')
+    hide_email = data.get('hide_email') == 'on'
 
-    if account_type == 'public' and is_public == False:
-        is_public = True
-    elif account_type == 'private' and is_public == True:
-        is_public = False
+    if account_type == 'public':
+        settings.is_public = True
+    elif account_type == 'private':
+        settings.is_public = False
 
-    settings.is_public = is_public
     settings.hide_email = hide_email
     settings.save()
 
-    return {'result':True, 'settings':settings}
+    return {
+        'result': True,
+        'settings': settings
+    }

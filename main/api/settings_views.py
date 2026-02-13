@@ -1,31 +1,42 @@
-from rest_framework import viewsets, permissions
-from main.permissions import IsAuthenticatedOrRedirect
-from rest_framework.renderers import TemplateHTMLRenderer
+from rest_framework import viewsets
 from rest_framework.decorators import action
-from django.shortcuts import render
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.renderers import TemplateHTMLRenderer
+from rest_framework.response import Response
 
+from main.permissions import IsAuthenticatedOrRedirect
 from main.services import settings_service, feedback_service
+
 
 class SettingsViewSet(viewsets.ViewSet):
     permission_classes = [IsAuthenticatedOrRedirect]
+    renderer_classes = [TemplateHTMLRenderer]
+    template_name = "main/settings.html"
+
+    def _get_context(self, user, settings=None):
+        if not settings:
+            settings = settings_service.get_settings(user)
+
+        return {
+            "settings": settings,
+            "comment_history": feedback_service.get_comments(user),
+            "like_history": feedback_service.get_likes(user),
+        }
 
     def list(self, request):
-        settings = settings_service.get_settings(request)
-        comments = feedback_service.get_comments(request)
-        likes = feedback_service.get_likes(request)
-        return render(request, 'main/settings.html', {'settings':settings, 'comment_history':comments, 'like_history':likes})
+        return Response(self._get_context(request.user))
 
-    @action(detail=False, methods=['post'], url_path='update_settings')
+    @action(detail=False, methods=["post"])
     def update_settings(self, request):
-        result = settings_service.update_settings(request)
-        if result['result']:
-            comments = feedback_service.get_comments(request)
-            likes = feedback_service.get_likes(request)
-            return render(request, 'main/settings.html', {'settings': result['settings'], 'comment_history':comments, 'like_history':likes})
+        result = settings_service.update_settings(request.user, request.data)
 
-        return render(
-            request,
-            "main/error.html",
+        if result["result"]:
+            return Response(
+                self._get_context(request.user, result["settings"])
+            )
+
+        return Response(
             {"error": result["error"]},
-            status=400
+            template_name="main/error.html",
+            status=400,
         )
