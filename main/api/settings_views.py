@@ -1,17 +1,14 @@
 from rest_framework import viewsets
 from rest_framework.decorators import action
-from rest_framework.permissions import IsAuthenticated
 from rest_framework.renderers import TemplateHTMLRenderer
 from rest_framework.response import Response
 
 from main.permissions import IsAuthenticatedOrRedirect
 from main.services import settings_service, feedback_service
 
-
 class SettingsViewSet(viewsets.ViewSet):
     permission_classes = [IsAuthenticatedOrRedirect]
     renderer_classes = [TemplateHTMLRenderer]
-    template_name = "main/settings.html"
 
     def _get_context(self, user, settings=None):
         if not settings:
@@ -24,7 +21,7 @@ class SettingsViewSet(viewsets.ViewSet):
         }
 
     def list(self, request):
-        return Response(self._get_context(request.user))
+        return Response(self._get_context(request.user), template_name="main/settings.html")
 
     @action(detail=False, methods=["post"])
     def update_settings(self, request):
@@ -32,7 +29,8 @@ class SettingsViewSet(viewsets.ViewSet):
 
         if result["result"]:
             return Response(
-                self._get_context(request.user, result["settings"])
+                self._get_context(request.user, result["settings"]),
+                template_name="main/settings.html"
             )
 
         return Response(
