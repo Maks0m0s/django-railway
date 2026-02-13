@@ -1,8 +1,11 @@
 from main.models import ProfileSettings
 
+def create_profile_settings(user):
+    settings = ProfileSettings.objects.create(user=user, is_public=True, hide_email=False)
+    settings.save()
 
 def get_settings(user):
-    settings, _ = ProfileSettings.objects.get_or_create(user=user)
+    settings = ProfileSettings.objects.filter(user=user).first()
     return settings
 
 

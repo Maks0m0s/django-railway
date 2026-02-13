@@ -3,6 +3,9 @@ from main.services.email_service import send_registration_email, send_update_ac_
 from main.services.dashboard_service import create_dashboard, delete_dashboard
 from django.contrib.auth import update_session_auth_hash
 
+from main.services.settings_service import create_profile_settings
+
+
 def register(validated_data):
     user = User(
         username=validated_data["username"],
@@ -14,6 +17,8 @@ def register(validated_data):
     user.save()
 
     create_dashboard(user)
+
+    create_profile_settings(user)
 
     send_registration_email(user)
 

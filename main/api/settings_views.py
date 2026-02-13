@@ -13,6 +13,10 @@ class SettingsViewSet(viewsets.ViewSet):
     def _get_context(self, user, settings=None):
         if not settings:
             settings = settings_service.get_settings(user)
+            if settings:
+                print('Profile Settings received !!!')
+            else:
+                print('Profile Settings wasnt received :(')
 
         return {
             "settings": settings,
