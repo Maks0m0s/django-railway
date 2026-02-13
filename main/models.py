@@ -11,6 +11,9 @@ class ProfileSettings(models.Model):
     is_public = models.BooleanField(default=True)
     hide_email = models.BooleanField(default=False)
 
+    def __str__(self):
+        return f"{self.user.username} Settings"
+
 class ProfileLink(models.Model):
     name = models.CharField(max_length=100)
     url = models.URLField(max_length=300)
