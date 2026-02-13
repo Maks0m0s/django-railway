@@ -52,7 +52,7 @@ urlpatterns = [
     path('search/', search_users, name='search'),
     path('admin-profile/', AuthViewSet.as_view({'get':'get_admin'}), name='get-admin'),
 
-    path('settings/', SettingsViewSet.as_view({'get':'list'}), name='profile-settings'),
+    path('settings/', SettingsViewSet.as_view({'get':'list'}), name='settings'),
     path('settings/update/', SettingsViewSet.as_view({'post':'update'}), name='update-settings')
 ]
 
