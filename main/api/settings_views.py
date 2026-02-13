@@ -25,7 +25,7 @@ class SettingsViewSet(viewsets.ViewSet):
 
     @action(detail=False, methods=["post"])
     def update_settings(self, request):
-        result = settings_service.update_settings(request.user, request.data)
+        result = settings_service.update_settings(request.user, request.POST)
 
         if result["result"]:
             return Response(
