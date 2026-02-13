@@ -53,7 +53,7 @@ urlpatterns = [
     path('admin-profile/', AuthViewSet.as_view({'get':'get_admin'}), name='get-admin'),
 
     path('settings/', SettingsViewSet.as_view({'get':'list'}), name='settings'),
-    path('settings/update/', SettingsViewSet.as_view({'post':'update'}), name='update-settings')
+    path('settings/update/', SettingsViewSet.as_view({'post':'update_settings'}), name='update-settings')
 ]
 
 if settings.DEBUG:

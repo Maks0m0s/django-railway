@@ -1,6 +1,7 @@
 from rest_framework import viewsets, permissions
 from main.permissions import IsAuthenticatedOrRedirect
 from rest_framework.renderers import TemplateHTMLRenderer
+from rest_framework.decorators import action
 from django.shortcuts import render
 
 from main.services import settings_service, feedback_service
@@ -14,7 +15,8 @@ class SettingsViewSet(viewsets.ViewSet):
         likes = feedback_service.get_likes(request)
         return render(request, 'main/settings.html', {'settings':settings, 'comment_history':comments, 'like_history':likes})
 
-    def update(self, request):
+    @action(detail=False, methods=['post'], url_path='update_settings')
+    def update_settings(self, request):
         result = settings_service.update_settings(request)
         if result['result']:
             comments = feedback_service.get_comments(request)
