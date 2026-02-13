@@ -139,7 +139,7 @@
                         <div class="fw-semibold">
                             Commented on
                             {% if comment.project %}
-                                <a href="{% url 'project' comment.project.id %}"
+                                <a href="{% url 'user-project' comment.project.user.id comment.project.id %}"
                                    class="text-primary text-decoration-none">
                                     {{ comment.project.name }}
                                 </a>
@@ -169,7 +169,7 @@
             <ul class="list-group list-group-flush">
                 {% for liked_project in like_history %}
                     <li class="list-group-item border-0 d-flex justify-content-between">
-                        <a href="{% url 'project' liked_project.id %}"
+                        <a href="{% url 'user-project' liked_project.user.id liked_project.id %}"
                            class="fw-semibold text-decoration-none text-primary">
                             {{ liked_project.name }}
                         </a>

@@ -3,11 +3,7 @@ from django.contrib.auth.models import User
 from cloudinary.models import CloudinaryField
 
 class ProfileSettings(models.Model):
-    user = models.ForeignKey(
-        User,
-        on_delete=models.CASCADE,
-        related_name="settings"
-    )
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='settings')
     is_public = models.BooleanField(default=True)
     hide_email = models.BooleanField(default=False)
 
@@ -80,7 +76,8 @@ class Comment(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f"Comment by {self.user.username} on {self.project.name}"
+        project_name = self.project.name if self.project else "Deleted Project"
+        return f"Comment by {self.user.username} on {project_name}"
 
 
 class Dashboard(models.Model):
