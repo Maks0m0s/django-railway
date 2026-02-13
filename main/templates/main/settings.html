@@ -14,7 +14,6 @@
         </p>
     </div>
 
-
     <!-- ================================================= -->
     <!-- =============== ACCOUNT SETTINGS =============== -->
     <!-- ================================================= -->
@@ -85,7 +84,6 @@
 
             <!-- Hide Email Toggle -->
             <div class="mt-5">
-
                 <div class="p-4 rounded-4 shadow-sm border d-flex justify-content-between align-items-center">
 
                     <div>
@@ -102,7 +100,6 @@
                     </label>
 
                 </div>
-
             </div>
 
             <div class="mt-4 text-end">
@@ -114,8 +111,6 @@
 
         </form>
     </div>
-
-
 
     <!-- ================================================= -->
     <!-- =============== ACTION HISTORY ================== -->
@@ -143,10 +138,14 @@
                     <div class="timeline-item mb-4">
                         <div class="fw-semibold">
                             Commented on
-                            <a href="{% url 'project' comment.project.id %}"
-                               class="text-primary text-decoration-none">
-                                {{ comment.project.name }}
-                            </a>
+                            {% if comment.project %}
+                                <a href="{% url 'project' comment.project.id %}"
+                                   class="text-primary text-decoration-none">
+                                    {{ comment.project.name }}
+                                </a>
+                            {% else %}
+                                <span class="text-muted">Deleted Project</span>
+                            {% endif %}
                         </div>
                         <div class="text-muted small">
                             "{{ comment.text|truncatechars:80 }}"
@@ -161,7 +160,6 @@
             <p class="text-muted">No comments yet.</p>
         {% endif %}
 
-
         <hr class="my-4">
 
         <!-- LIKES HISTORY -->
@@ -171,7 +169,7 @@
             <ul class="list-group list-group-flush">
                 {% for liked_project in like_history %}
                     <li class="list-group-item border-0 d-flex justify-content-between">
-                        <a href="{% url 'project' like.project.id %}"
+                        <a href="{% url 'project' liked_project.id %}"
                            class="fw-semibold text-decoration-none text-primary">
                             {{ liked_project.name }}
                         </a>
@@ -185,7 +183,6 @@
     </div>
 
 </div>
-
 
 <!-- ================= STYLE ================= -->
 <style>
