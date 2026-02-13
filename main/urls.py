@@ -10,6 +10,7 @@ from main.api.profile_views import ProfileViewSet
 from main.api.project_views import ProjectViewSet
 from main.api.search_views import SearchViewSet
 from main.api.feedback_views import ProjectFeedbackViewSet
+from main.api.settings_views import SettingsViewSet
 
 login_views = AuthViewSet.as_view({'get':'login', 'post':'login'})
 register_views = AuthViewSet.as_view({'get':'register', 'post':'register'})
@@ -49,7 +50,10 @@ urlpatterns = [
     path('profile/delete-link/<int:pk>/', ProfileViewSet.as_view({'post': 'delete_profile_link'}), name='delete-profile-link'),
 
     path('search/', search_users, name='search'),
-    path('admin-profile/', AuthViewSet.as_view({'get':'get_admin'}), name='get-admin')
+    path('admin-profile/', AuthViewSet.as_view({'get':'get_admin'}), name='get-admin'),
+
+    path('settings/', SettingsViewSet.as_view({'get':'list'}), name='profile-settings'),
+    path('settings/update/', SettingsViewSet.as_view({'post':'update'}), name='update-settings')
 ]
 
 if settings.DEBUG:

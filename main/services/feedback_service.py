@@ -71,3 +71,11 @@ def toggle_like(request, user_id, pk):
         project.likes.add(request.user)
 
     return {'result': True, 'project': project, 'profile_user': profile_user}
+
+def get_comments(request):
+    comments = request.user.comments.all()
+    return comments
+
+def get_likes(request):
+    likes = request.user.liked_projects.all()
+    return likes
