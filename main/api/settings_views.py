@@ -7,7 +7,7 @@ from main.permissions import IsAuthenticatedOrRedirect
 from main.services import settings_service, feedback_service
 
 class SettingsViewSet(viewsets.ViewSet):
-    permission_classes = [IsAuthenticatedOrRedirect]
+    permission_classes = []
     renderer_classes = [TemplateHTMLRenderer]
 
     def _get_context(self, user, settings=None):
