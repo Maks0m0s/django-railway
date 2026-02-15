@@ -11,15 +11,15 @@
         <div class="mb-3">
             <label class="form-label">Profile Visibility:</label><br>
             <input type="radio" name="account_type" value="public"
-                   {% if settings.is_public %}checked{% endif %}> Public<br>
+                   {% if settings and settings.is_public %}checked{% endif %}> Public<br>
             <input type="radio" name="account_type" value="private"
-                   {% if not settings.is_public %}checked{% endif %}> Private
+                   {% if settings and not settings.is_public %}checked{% endif %}> Private
         </div>
 
         <div class="mb-3">
             <label class="form-label">Hide Email:</label>
             <input type="checkbox" name="hide_email"
-                   {% if settings.hide_email %}checked{% endif %}>
+                   {% if settings and settings.hide_email %}checked{% endif %}>
         </div>
 
         <button type="submit" class="btn btn-primary">Save Changes</button>
