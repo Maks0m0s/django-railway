@@ -2,7 +2,7 @@ from django.db import models
 from django.contrib.auth.models import User
 from cloudinary.models import CloudinaryField
 
-class Settings(models.Model):
+class ProfileSettings(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='settings')
     is_public = models.BooleanField(default=True)
     hide_email = models.BooleanField(default=False)
