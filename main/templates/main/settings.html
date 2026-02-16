@@ -150,7 +150,7 @@
                             </a>
                         </div>
                         <div class="text-muted small">
-                            "{{ comment.content|truncatechars:80 }}"
+                            "{{ comment.text|truncatechars:80 }}"
                         </div>
                         <div class="text-muted small">
                             {{ comment.created_at|date:"M d, Y H:i" }}
@@ -176,6 +176,9 @@
                            class="fw-semibold text-decoration-none text-primary">
                             {{ liked_project.name }}
                         </a>
+                        <small class="text-muted">
+                            {{ liked_project.user.username }}
+                        </small>
                     </li>
                 {% endfor %}
             </ul>
@@ -186,6 +189,28 @@
     </div>
 
 </div>
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+
+    const radios = document.querySelectorAll('input[name="account_type"]');
+    const cards = document.querySelectorAll('.account-option');
+
+    radios.forEach(radio => {
+        radio.addEventListener("change", function() {
+
+            // Remove active class from all
+            cards.forEach(card => card.classList.remove("active-option"));
+
+            // Add active class to selected one
+            const selectedCard = this.closest("label").querySelector(".account-option");
+            selectedCard.classList.add("active-option");
+
+        });
+    });
+
+});
+</script>
 
 
 <!-- ================= STYLE ================= -->
