@@ -16,6 +16,13 @@ class SearchViewSet(viewsets.ViewSet):
             return Response({'results': []})
 
         users = User.objects.filter(username__icontains=q)[:10]
+        public_users = []
+        for user in users:
+            if user.settings.is_public:
+                public_users.append(user)
+
+        if len(public_users) < 1:
+            return Response({'results': []})
 
         return Response({
             'results': [
@@ -24,6 +31,6 @@ class SearchViewSet(viewsets.ViewSet):
                     'username': u.username,
                     'first_name': u.first_name,
                     'last_name': u.last_name,
-                } for u in users
+                } for u in public_users
             ]
         })
