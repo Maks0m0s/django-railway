@@ -141,15 +141,15 @@
         {% if comment_history %}
             <div class="timeline">
                 {% for comment in comment_history %}
-                    <div class="timeline-item mb-4">
-                        <div class="fw-semibold">
+                    <div class="timeline-item mb-4 p-3 rounded-3 shadow-sm" style="background:#f8f9fa; border-left:4px solid #0d6efd;">
+                        <div class="fw-semibold mb-2">
                             Commented on
-                            <a href="{% url 'user-project' comment.user.id comment.project.id %}"
+                            <a href="{% url 'user-project' comment.project.user.id comment.project.id %}"
                                class="text-primary text-decoration-none">
                                 {{ comment.project.name }}
                             </a>
                         </div>
-                        <div class="text-muted small">
+                        <div class="text-muted mb-2">
                             "{{ comment.text|truncatechars:80 }}"
                         </div>
                         <div class="text-muted small">
