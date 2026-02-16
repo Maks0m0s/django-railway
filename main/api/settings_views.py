@@ -21,24 +21,24 @@ class SettingsViewSet(viewsets.ViewSet):
             "like_history": feedback_service.get_likes(user),
         }
 
-    def list(self, request):
-        return Response(
-            self._get_context(request.user),
-            template_name=self.template_name,
-        )
+    @action(detail=False, methods=["get","post"], url_path='profile_settings')
+    def profile_settings(self, request):
+        if request.method == 'POST':
+            result = settings_service.update_settings(request.user, request.POST)
 
-    @action(detail=False, methods=["post"], url_path='update_settings')
-    def update_settings(self, request):
-        result = settings_service.update_settings(request.user, request.POST)
+            if result["result"]:
+                return Response(
+                    self._get_context(request.user, result["settings"]),
+                    template_name=self.template_name,
+                )
 
-        if result["result"]:
             return Response(
-                self._get_context(request.user, result["settings"]),
-                template_name=self.template_name,
+                {"error": result["error"]},
+                template_name="main/error.html",
+                status=400,
             )
 
         return Response(
-            {"error": result["error"]},
-            template_name="main/error.html",
-            status=400,
+            self._get_context(request.user),
+            template_name=self.template_name,
         )
